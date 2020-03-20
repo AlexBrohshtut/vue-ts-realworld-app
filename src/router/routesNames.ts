@@ -1,4 +1,4 @@
-interface RoutesNames {
+interface IRoutesNames {
   home: string;
 
   authLogin: string;
@@ -13,7 +13,7 @@ interface RoutesNames {
   profileFavorites: string;
 }
 
-const routesNames: Readonly<RoutesNames> = {
+const routesNames: Readonly<IRoutesNames> = {
   home: "home",
 
   authLogin: "authLogin",
