@@ -1,23 +1,70 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import RoutesNames from "./routesNames";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: RoutesNames.home,
+    component: () => import(/* webpackChunkName: "home" */ "@/views/Home.vue")
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    path: "/login",
+    name: RoutesNames.authLogin,
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "authLogin" */ "@/views/AuthLogin.vue")
+  },
+  {
+    path: "/register",
+    name: RoutesNames.authRegister,
+    component: () =>
+      import(/* webpackChunkName: "authRegister" */ "@/views/AuthRegister.vue")
+  },
+  {
+    path: "/editor",
+    name: RoutesNames.articleCreate,
+    component: () =>
+      import(
+        /* webpackChunkName: "articleCreate" */ "@/views/ArticleCreate.vue"
+      )
+  },
+  {
+    path: "/editor/:slug",
+    name: RoutesNames.articleEdit,
+    component: () =>
+      import(/* webpackChunkName: "articleEdit" */ "@/views/ArticleEdit.vue")
+  },
+  {
+    path: "/article/:slug",
+    name: RoutesNames.articleView,
+    component: () =>
+      import(/* webpackChunkName: "articleView" */ "@/views/ArticleView.vue")
+  },
+  {
+    path: "/profile/:username",
+    name: RoutesNames.profileIndex,
+    component: () =>
+      import(/* webpackChunkName: "profileIndex" */ "@/views/ProfileIndex.vue"),
+    children: [
+      {
+        path: "/favorites",
+        name: RoutesNames.profileFavorites,
+        component: () =>
+          import(
+            /* webpackChunkName: "profileFavorites" */ "@/views/ProfileFavorites.vue"
+          )
+      }
+    ]
+  },
+  {
+    path: "/settings",
+    name: RoutesNames.profileSettings,
+    component: () =>
+      import(
+        /* webpackChunkName: "profileSettings" */ "@/views/ProfileSettings.vue"
+      )
   }
 ];
 
