@@ -4,9 +4,9 @@ import router from "@/router";
 import routesNames from "@/router/routesNames";
 
 abstract class RealWorldApiBase {
-  protected readonly Client: AxiosInstance;
+  protected readonly client: AxiosInstance;
   constructor() {
-    this.Client = axios.create({
+    this.client = axios.create({
       baseURL: process.env.REAL_WORLD_API_URL,
       timeout: 5000
     });
@@ -16,16 +16,16 @@ abstract class RealWorldApiBase {
   }
 
   private initializeClientHeaders() {
-    this.Client.defaults.headers.get.Accepts = "application/json";
-    this.Client.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+    this.client.defaults.headers.get.Accepts = "application/json";
+    this.client.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
   }
 
   private initializeRequestInterceptors() {
-    this.Client.interceptors.request.use(AuthInterceptor);
+    this.client.interceptors.request.use(AuthInterceptor);
   }
 
   private initializeResponseInterceptors() {
-    this.Client.interceptors.response.use(OnResponseSuccess, OnResponseFailure);
+    this.client.interceptors.response.use(OnResponseSuccess, OnResponseFailure);
   }
 }
 
