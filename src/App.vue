@@ -1,23 +1,23 @@
 <template>
   <div>
-    <vtra-header />
+    <app-header />
     <keep-alive>
       <router-view />
     </keep-alive>
-    <vtra-footer />
+    <app-footer />
   </div>
 </template>
 
 <script type="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import VtraFooter from "@/components/layouts/Main/VtraFooter";
-import VtraHeader from "@/components/layouts/Main/VtraHeader";
+import AppFooter from "@/layouts/AppFooter";
+import AppHeader from "@/layouts/AppHeader";
 
 @Component({
   components: {
-    VtraFooter,
-    VtraHeader
+    AppFooter,
+    AppHeader
   }
 })
 export default class App extends Vue {}

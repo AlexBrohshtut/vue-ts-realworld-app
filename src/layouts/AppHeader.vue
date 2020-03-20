@@ -30,5 +30,5 @@ import Vue from "vue";
 import Component from "vue-class-component";
 
 @Component
-export default class VtraHeader extends Vue {}
+export default class AppHeader extends Vue {}
 </script>
