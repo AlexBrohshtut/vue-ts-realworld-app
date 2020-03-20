@@ -11,8 +11,8 @@
 <script type="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import AppFooter from "@/layouts/AppFooter";
-import AppHeader from "@/layouts/AppHeader";
+import AppFooter from "@/layouts/AppFooter.vue";
+import AppHeader from "@/layouts/AppHeader.vue";
 
 @Component({
   components: {
