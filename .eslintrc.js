@@ -8,10 +8,16 @@ module.exports = {
     "eslint:recommended",
     "@vue/typescript/recommended",
     "@vue/prettier",
-    "@vue/prettier/@typescript-eslint"
+    "@vue/prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
+  parser: "vue-eslint-parser",
   parserOptions: {
-    ecmaVersion: 2020
+    ecmaVersion: 2020,
+    project: `./tsconfig.json`,
+    parser: "@typescript-eslint/parser"
   },
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
@@ -23,6 +29,12 @@ module.exports = {
         extensions: ["vue"],
         shouldMatchCase: true
       }
+    ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/interface-name-prefix": ["error", "always"],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { allowExpressions: true }
     ]
   },
   overrides: [

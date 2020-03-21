@@ -1,0 +1,6 @@
+./.eslintrc.js
+babel.config.js
+jest.config.js
+
+/src/shims-vue.d.ts
+/src/shims-tsx.d.ts
