@@ -1,4 +1,4 @@
-import RealWorldApiBase from "./RealWorldApiBase";
+import RealWorldApiInstance from "./RealWorldApiBase";
 import {
   ArticleGetFeedRequestParams,
   ArticleGetListRequestParams,
@@ -10,70 +10,96 @@ import {
   IComment
 } from "./Models";
 
-class RealWorldApiArticle extends RealWorldApiBase {
-  async GetList(params: ArticleGetListRequestParams): Promise<IArticleList> {
-    const res = await this.client.get("/articles", { params });
-    return res?.data as IArticleList;
-  }
+const ARTICLES_PATH = "/articles";
 
-  async GetFeed(params: ArticleGetFeedRequestParams): Promise<IArticleList> {
-    const res = await this.client.get("/articles/feed", { params });
-    return res?.data as IArticleList;
-  }
+export const ArticleGetList = async (
+  params: ArticleGetListRequestParams
+): Promise<IArticleList> => {
+  const res = await RealWorldApiInstance.get(ARTICLES_PATH, { params });
+  return res?.data as IArticleList;
+};
 
-  async Get(slug: string): Promise<IArticle> {
-    const res = await this.client.get(`/articles/:${slug}`);
-    return res?.data?.article as IArticle;
-  }
+export const ArticleGetFeed = async (
+  params: ArticleGetFeedRequestParams
+): Promise<IArticleList> => {
+  const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/feed`, {
+    params
+  });
+  return res?.data as IArticleList;
+};
 
-  async Create(params: ArticleCreateRequestParams): Promise<IArticle> {
-    const res = await this.client.post("/articles", { article: params });
-    return res?.data?.article as IArticle;
-  }
+export const ArticleGet = async (slug: string): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/:${slug}`);
+  return res?.data?.article as IArticle;
+};
 
-  async Update(
-    slug: string,
-    params: ArticleUpdateRequestParams
-  ): Promise<IArticle> {
-    const res = await this.client.put(`/articles/:${slug}`, {
-      article: params
-    });
-    return res?.data?.article as IArticle;
-  }
+export const ArticleCreate = async (
+  params: ArticleCreateRequestParams
+): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.post(ARTICLES_PATH, {
+    article: params
+  });
+  return res?.data?.article as IArticle;
+};
 
-  async Delete(slug: string): Promise<IArticle> {
-    const res = await this.client.delete(`/articles/:${slug}`);
-    return res?.data?.article as IArticle;
-  }
+export const ArticleUpdate = async (
+  slug: string,
+  params: ArticleUpdateRequestParams
+): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.put(`${ARTICLES_PATH}/:${slug}`, {
+    article: params
+  });
+  return res?.data?.article as IArticle;
+};
 
-  async AddComment(
-    slug: string,
-    params: ArticleAddCommentRequestParams
-  ): Promise<IComment> {
-    const res = await this.client.post(`/articles/:${slug}/comments`, {
+export const ArticleDelete = async (slug: string): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.delete(`${ARTICLES_PATH}/:${slug}`);
+  return res?.data?.article as IArticle;
+};
+
+export const ArticleAddComment = async (
+  slug: string,
+  params: ArticleAddCommentRequestParams
+): Promise<IComment> => {
+  const res = await RealWorldApiInstance.post(
+    `${ARTICLES_PATH}/:${slug}/comments`,
+    {
       comment: params
-    });
-    return res?.data?.comment as IComment;
-  }
+    }
+  );
+  return res?.data?.comment as IComment;
+};
 
-  async GetComments(slug: string): Promise<IComment[]> {
-    const res = await this.client.get(`/articles/:${slug}/comments`);
-    return res?.data?.comments as IComment[];
-  }
+export const ArticleGetComments = async (slug: string): Promise<IComment[]> => {
+  const res = await RealWorldApiInstance.get(
+    `${ARTICLES_PATH}/:${slug}/comments`
+  );
+  return res?.data?.comments as IComment[];
+};
 
-  async DeleteComment(slug: string, commentId: number): Promise<void> {
-    await this.client.get(`/articles/:${slug}/comments/:${commentId}`);
-  }
+export const ArticleDeleteComment = async (
+  slug: string,
+  commentId: number
+): Promise<void> => {
+  await RealWorldApiInstance.get(
+    `${ARTICLES_PATH}/:${slug}/comments/:${commentId}`
+  );
+};
 
-  async AddToFavorites(slug: string): Promise<IArticle> {
-    const res = await this.client.post(`/articles/:${slug}/favorite`);
-    return res?.data?.article as IArticle;
-  }
+export const ArticleAddToFavorites = async (
+  slug: string
+): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.post(
+    `${ARTICLES_PATH}/:${slug}/favorite`
+  );
+  return res?.data?.article as IArticle;
+};
 
-  async RemoveFromFavorites(slug: string): Promise<IArticle> {
-    const res = await this.client.delete(`/articles/:${slug}/favorite`);
-    return res?.data?.article as IArticle;
-  }
-}
-
-export default new RealWorldApiArticle();
+export const ArticleRemoveFromFavorites = async (
+  slug: string
+): Promise<IArticle> => {
+  const res = await RealWorldApiInstance.delete(
+    `${ARTICLES_PATH}/:${slug}/favorite`
+  );
+  return res?.data?.article as IArticle;
+};

@@ -1,10 +1,6 @@
-import RealWorldApiBase from "./RealWorldApiBase";
+import RealWorldApiInstance from "./RealWorldApiBase";
 
-class RealWorldApiTags extends RealWorldApiBase {
-  async Get(): Promise<string[]> {
-    const res = await this.client.get("/tags");
-    return res?.data?.tags as string[];
-  }
-}
-
-export default new RealWorldApiTags();
+export const TagsGet = async (): Promise<string[]> => {
+  const res = await RealWorldApiInstance.get("/tags");
+  return res?.data?.tags as string[];
+};

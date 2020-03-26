@@ -38,30 +38,16 @@ const OnResponseFailure = (error: any): Promise<any> => {
   return Promise.reject(error);
 };
 
-abstract class RealWorldApiBase {
-  protected readonly client: AxiosInstance;
-  constructor() {
-    this.client = axios.create({
-      baseURL: process.env.REAL_WORLD_API_URL,
-      timeout: 5000
-    });
-    this.initializeClientHeaders();
-    this.initializeRequestInterceptors();
-    this.initializeResponseInterceptors();
-  }
+const instance: Readonly<AxiosInstance> = axios.create({
+  baseURL: process.env.REAL_WORLD_API_URL,
+  timeout: 5000
+});
 
-  private initializeClientHeaders(): void {
-    this.client.defaults.headers.get.Accepts = "application/json";
-    this.client.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
-  }
+instance.defaults.headers.get.Accepts = "application/json";
+instance.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
-  private initializeRequestInterceptors(): void {
-    this.client.interceptors.request.use(AuthInterceptor);
-  }
+instance.interceptors.request.use(AuthInterceptor);
 
-  private initializeResponseInterceptors(): void {
-    this.client.interceptors.response.use(OnResponseSuccess, OnResponseFailure);
-  }
-}
+instance.interceptors.response.use(OnResponseSuccess, OnResponseFailure);
 
-export default RealWorldApiBase;
+export default instance;
