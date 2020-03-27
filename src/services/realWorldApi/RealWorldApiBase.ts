@@ -2,10 +2,11 @@ import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
 import HttpStatusCodes from "../HttpStatusCodes";
 import router from "@/router";
 import routesNames from "@/router/routesNames";
+import User from "@/store/modules/User";
 
 const AuthInterceptor = (config: AxiosRequestConfig): AxiosRequestConfig => {
   //TODO: Get real accessToken
-  const accessToken = "";
+  const accessToken = User.authToken;
   if (accessToken) config.headers.Authorization = `Token ${accessToken}`;
   return config;
 };
