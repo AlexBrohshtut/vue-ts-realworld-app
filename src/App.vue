@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script type="ts">
+<script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
 import AppFooter from "@/layouts/AppFooter.vue";
