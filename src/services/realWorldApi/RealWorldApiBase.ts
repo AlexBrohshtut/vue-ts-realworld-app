@@ -5,7 +5,6 @@ import routesNames from "@/router/routesNames";
 import User from "@/store/modules/User";
 
 const AuthInterceptor = (config: AxiosRequestConfig): AxiosRequestConfig => {
-  //TODO: Get real accessToken
   const accessToken = User.authToken;
   if (accessToken) config.headers.Authorization = `Token ${accessToken}`;
   return config;

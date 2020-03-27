@@ -1,5 +1,5 @@
 import RealWorldApiInstance from "./RealWorldApiBase";
-import { IProfile } from "./Models";
+import { IProfile } from "./models";
 
 const PROFILES_PATH = "/profiles";
 

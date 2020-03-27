@@ -1,26 +1,26 @@
 import RealWorldApiInstance from "./RealWorldApiBase";
 import {
-  ArticleGetFeedRequestParams,
-  ArticleGetListRequestParams,
-  ArticleCreateRequestParams,
-  ArticleUpdateRequestParams,
-  ArticleAddCommentRequestParams,
+  IArticleGetFeedRequestParams,
+  IArticleGetListRequestParams,
+  IArticleCreateRequestParams,
+  IArticleUpdateRequestParams,
+  IArticleAddCommentRequestParams,
+  IComment,
   IArticleList,
-  IArticle,
-  IComment
-} from "./Models";
+  IArticle
+} from "./models";
 
 const ARTICLES_PATH = "/articles";
 
 export const ArticleGetList = async (
-  params: ArticleGetListRequestParams
+  params: IArticleGetListRequestParams
 ): Promise<IArticleList> => {
   const res = await RealWorldApiInstance.get(ARTICLES_PATH, { params });
   return res?.data as IArticleList;
 };
 
 export const ArticleGetFeed = async (
-  params: ArticleGetFeedRequestParams
+  params: IArticleGetFeedRequestParams
 ): Promise<IArticleList> => {
   const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/feed`, {
     params
@@ -34,7 +34,7 @@ export const ArticleGet = async (slug: string): Promise<IArticle> => {
 };
 
 export const ArticleCreate = async (
-  params: ArticleCreateRequestParams
+  params: IArticleCreateRequestParams
 ): Promise<IArticle> => {
   const res = await RealWorldApiInstance.post(ARTICLES_PATH, {
     article: params
@@ -44,7 +44,7 @@ export const ArticleCreate = async (
 
 export const ArticleUpdate = async (
   slug: string,
-  params: ArticleUpdateRequestParams
+  params: IArticleUpdateRequestParams
 ): Promise<IArticle> => {
   const res = await RealWorldApiInstance.put(`${ARTICLES_PATH}/:${slug}`, {
     article: params
@@ -59,7 +59,7 @@ export const ArticleDelete = async (slug: string): Promise<IArticle> => {
 
 export const ArticleAddComment = async (
   slug: string,
-  params: ArticleAddCommentRequestParams
+  params: IArticleAddCommentRequestParams
 ): Promise<IComment> => {
   const res = await RealWorldApiInstance.post(
     `${ARTICLES_PATH}/:${slug}/comments`,

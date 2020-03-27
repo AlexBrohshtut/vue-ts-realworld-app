@@ -1,16 +1,17 @@
 import {
-  UserLoginRequestParams,
-  UserRegisterRequestParams,
-  UserUpdateRequestParams,
+  IUserLoginRequestParams,
+  IUserRegisterRequestParams,
+  IUserUpdateRequestParams,
   IUser
-} from "./Models";
+} from "./models";
+
 import RealWorldApiInstance from "./RealWorldApiBase";
 
 const USER_PATH = "/user";
 const USERS_PATH = "/users";
 
 export const UserLogin = async (
-  params: UserLoginRequestParams
+  params: IUserLoginRequestParams
 ): Promise<IUser> => {
   const res = await RealWorldApiInstance.post(`${USERS_PATH}/login`, {
     user: params
@@ -19,7 +20,7 @@ export const UserLogin = async (
 };
 
 export const UserRegister = async (
-  params: UserRegisterRequestParams
+  params: IUserRegisterRequestParams
 ): Promise<IUser> => {
   const res = await RealWorldApiInstance.post(USERS_PATH, { user: params });
   return res?.data?.user as IUser;
@@ -31,7 +32,7 @@ export const UserGetCurrent = async (): Promise<IUser> => {
 };
 
 export const UserUpdate = async (
-  params: UserUpdateRequestParams
+  params: IUserUpdateRequestParams
 ): Promise<IUser> => {
   const res = await RealWorldApiInstance.put(USER_PATH, { user: params });
   return res?.data?.user as IUser;
