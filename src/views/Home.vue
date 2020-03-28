@@ -73,15 +73,16 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import HomeBanner from "@/components/HomeBanner.vue";
-import HomeTags from "@/components/HomeTags.vue";
+
 import ArticlePreview from "@/components/ArticlePreview.vue";
-import Article from "@/store/modules/Article";
-import { IArticleList } from "@/services/realWorldApi/models";
-import IPagination from "@/services/common/IPagination";
-import User from "@/store/modules/User";
 import CommonLoader from "@/components/CommonLoader.vue";
 import CommonPagination from "@/components/CommonPagination.vue";
+import HomeBanner from "@/components/HomeBanner.vue";
+import HomeTags from "@/components/HomeTags.vue";
+import IPagination from "@/services/common/IPagination";
+import { IArticleList } from "@/services/realWorldApi/models";
+import Article from "@/store/modules/Article";
+import User from "@/store/modules/User";
 
 enum FeedType {
   Global,

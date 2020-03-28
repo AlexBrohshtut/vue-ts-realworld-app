@@ -1,14 +1,15 @@
-import RealWorldApiInstance from "./RealWorldApiBase";
-import {
-  IArticleGetListRequestParams,
-  IArticleCreateRequestParams,
-  IArticleUpdateRequestParams,
-  IArticleAddCommentRequestParams,
-  IComment,
-  IArticleList,
-  IArticle
-} from "./models";
 import IPagination from "@/services/common/IPagination";
+
+import {
+  IArticle,
+  IArticleAddCommentRequestParams,
+  IArticleCreateRequestParams,
+  IArticleGetListRequestParams,
+  IArticleList,
+  IArticleUpdateRequestParams,
+  IComment
+} from "./models";
+import RealWorldApiInstance from "./RealWorldApiBase";
 
 const ARTICLES_PATH = "/articles";
 

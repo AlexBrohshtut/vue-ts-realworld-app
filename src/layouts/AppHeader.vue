@@ -32,8 +32,9 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import User from "@/store/modules/User";
+
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
+import User from "@/store/modules/User";
 
 @Component
 export default class AppHeader extends Vue {

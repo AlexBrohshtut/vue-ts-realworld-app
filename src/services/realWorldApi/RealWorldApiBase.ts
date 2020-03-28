@@ -1,7 +1,8 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
-import HttpStatusCodes from "@/services/common/HttpStatusCodes";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+
 import router from "@/router";
 import routesNames from "@/router/routesNames";
+import HttpStatusCodes from "@/services/common/HttpStatusCodes";
 import User from "@/store/modules/User";
 
 const AuthInterceptor = (config: AxiosRequestConfig): AxiosRequestConfig => {

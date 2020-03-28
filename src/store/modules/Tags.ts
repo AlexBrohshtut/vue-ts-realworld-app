@@ -1,7 +1,9 @@
-import { Module, VuexModule, getModule, Action } from "vuex-module-decorators";
+import { Action, getModule, Module, VuexModule } from "vuex-module-decorators";
+
+import { TagsGet } from "@/services/realWorldApi/RealWorldApiTags";
+
 import store from "../index";
 import modulesNames from "../modulesNames";
-import { TagsGet } from "@/services/realWorldApi/RealWorldApiTags";
 
 @Module({ dynamic: true, store, name: modulesNames.tags })
 class Tags extends VuexModule {

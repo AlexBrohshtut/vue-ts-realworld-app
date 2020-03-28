@@ -22,8 +22,9 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import Tags from "@/store/modules/Tags";
+
 import CommonLoader from "@/components/CommonLoader.vue";
+import Tags from "@/store/modules/Tags";
 
 @Component({
   components: { CommonLoader }

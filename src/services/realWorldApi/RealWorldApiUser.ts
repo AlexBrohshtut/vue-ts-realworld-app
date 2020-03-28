@@ -1,10 +1,9 @@
 import {
+  IUser,
   IUserLoginRequestParams,
   IUserRegisterRequestParams,
-  IUserUpdateRequestParams,
-  IUser
+  IUserUpdateRequestParams
 } from "./models";
-
 import RealWorldApiInstance from "./RealWorldApiBase";
 
 const USER_PATH = "/user";

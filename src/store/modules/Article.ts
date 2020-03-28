@@ -1,6 +1,15 @@
-import { Module, VuexModule, getModule, Action } from "vuex-module-decorators";
-import store from "../index";
-import modulesNames from "../modulesNames";
+import { Action, getModule, Module, VuexModule } from "vuex-module-decorators";
+
+import IPagination from "@/services/common/IPagination";
+import {
+  IArticle,
+  IArticleAddCommentRequestParams,
+  IArticleCreateRequestParams,
+  IArticleGetListRequestParams,
+  IArticleList,
+  IArticleUpdateRequestParams,
+  IComment
+} from "@/services/realWorldApi/models";
 import {
   ArticleAddComment,
   ArticleAddToFavorites,
@@ -14,16 +23,9 @@ import {
   ArticleRemoveFromFavorites,
   ArticleUpdate
 } from "@/services/realWorldApi/RealWorldApiArticle";
-import {
-  IArticle,
-  IComment,
-  IArticleAddCommentRequestParams,
-  IArticleCreateRequestParams,
-  IArticleGetListRequestParams,
-  IArticleList,
-  IArticleUpdateRequestParams
-} from "@/services/realWorldApi/models";
-import IPagination from "@/services/common/IPagination";
+
+import store from "../index";
+import modulesNames from "../modulesNames";
 
 @Module({ dynamic: true, store, name: modulesNames.article })
 class Article extends VuexModule {

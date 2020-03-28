@@ -1,12 +1,14 @@
-import { Module, VuexModule, getModule, Action } from "vuex-module-decorators";
-import store from "../index";
-import modulesNames from "../modulesNames";
+import { Action, getModule, Module, VuexModule } from "vuex-module-decorators";
+
+import { IProfile } from "@/services/realWorldApi/models";
 import {
   ProfileFollow,
   ProfileGet,
   ProfileUnfollow
 } from "@/services/realWorldApi/RealWorldApiProfile";
-import { IProfile } from "@/services/realWorldApi/models";
+
+import store from "../index";
+import modulesNames from "../modulesNames";
 
 @Module({ dynamic: true, store, name: modulesNames.profile })
 class Profile extends VuexModule {

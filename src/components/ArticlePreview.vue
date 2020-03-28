@@ -54,8 +54,9 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import Component from "vue-class-component";
-import { IArticle } from "@/services/realWorldApi/models";
+
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
+import { IArticle } from "@/services/realWorldApi/models";
 import DateUtils from "@/utils/DateUtils";
 
 const MAX_VISIBLE_TAGS = 5;

@@ -13,6 +13,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
+  plugins: ["simple-import-sort"],
   parser: "vue-eslint-parser",
   parserOptions: {
     ecmaVersion: 2020,
@@ -35,7 +36,8 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": [
       "error",
       { allowExpressions: true }
-    ]
+    ],
+    "simple-import-sort/sort": "error"
   },
   overrides: [
     {

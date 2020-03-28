@@ -1,26 +1,28 @@
 import {
-  Module,
-  VuexModule,
+  Action,
   getModule,
+  Module,
   Mutation,
-  Action
+  VuexModule
 } from "vuex-module-decorators";
-import LocalStorageUtils from "@/utils/LocalStorageUtils";
-import store from "../index";
-import modulesNames from "../modulesNames";
+
+import {
+  IUser,
+  IUserLoginRequestParams,
+  IUserRegisterRequestParams,
+  IUserUpdateRequestParams
+} from "@/services/realWorldApi/models";
 import {
   UserGetCurrent,
   UserLogin,
   UserRegister,
   UserUpdate
 } from "@/services/realWorldApi/RealWorldApiUser";
-import {
-  IUserLoginRequestParams,
-  IUserRegisterRequestParams,
-  IUserUpdateRequestParams,
-  IUser
-} from "@/services/realWorldApi/models";
+import LocalStorageUtils from "@/utils/LocalStorageUtils";
+
+import store from "../index";
 import { ICurrentUser, IUserState } from "../models";
+import modulesNames from "../modulesNames";
 import { TransformICurrentUserToIUser } from "../transformers/IUserTransformers";
 
 const AUTH_TOKEN_KEY = "realWorldAuthToken";
