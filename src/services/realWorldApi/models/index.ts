@@ -1,7 +1,6 @@
 import IArticle from "./IArticle";
 import IArticleAddCommentRequestParams from "./IArticleAddCommentRequestParams";
 import IArticleCreateRequestParams from "./IArticleCreateRequestParams";
-import IArticleGetFeedRequestParams from "./IArticleGetFeedRequestParams";
 import IArticleGetListRequestParams from "./IArticleGetListRequestParams";
 import IArticleList from "./IArticleList";
 import IArticleUpdateRequestParams from "./IArticleUpdateRequestParams";
@@ -17,7 +16,6 @@ export {
   IArticle,
   IArticleAddCommentRequestParams,
   IArticleCreateRequestParams,
-  IArticleGetFeedRequestParams,
   IArticleGetListRequestParams,
   IArticleList,
   IArticleUpdateRequestParams,

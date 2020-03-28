@@ -34,7 +34,11 @@
     </router-link>
 
     <div class="pull-xs-right">
-      <span v-for="tag in visibleTags" :key="tag" class="tag-pill tag-default">
+      <span
+        v-for="tag in visibleTags"
+        :key="tag"
+        class="tag-pill tag-default tag-outline"
+      >
         {{ tag }}
       </span>
       <span v-if="nonVisibleTagsNumber > 0">

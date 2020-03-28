@@ -19,11 +19,11 @@ import {
   IComment,
   IArticleAddCommentRequestParams,
   IArticleCreateRequestParams,
-  IArticleGetFeedRequestParams,
   IArticleGetListRequestParams,
   IArticleList,
   IArticleUpdateRequestParams
 } from "@/services/realWorldApi/models";
+import IPagination from "@/services/common/IPagination";
 
 @Module({ dynamic: true, store, name: modulesNames.article })
 class Article extends VuexModule {
@@ -35,7 +35,7 @@ class Article extends VuexModule {
 
   @Action
   async getFeed(
-    params: IArticleGetFeedRequestParams = { limit: 20, offset: 0 }
+    params: IPagination = { limit: 20, offset: 0 }
   ): Promise<IArticleList> {
     return await ArticleGetFeed(params);
   }

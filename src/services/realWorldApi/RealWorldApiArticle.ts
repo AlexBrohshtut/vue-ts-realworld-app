@@ -1,6 +1,5 @@
 import RealWorldApiInstance from "./RealWorldApiBase";
 import {
-  IArticleGetFeedRequestParams,
   IArticleGetListRequestParams,
   IArticleCreateRequestParams,
   IArticleUpdateRequestParams,
@@ -9,6 +8,7 @@ import {
   IArticleList,
   IArticle
 } from "./models";
+import IPagination from "@/services/common/IPagination";
 
 const ARTICLES_PATH = "/articles";
 
@@ -20,7 +20,7 @@ export const ArticleGetList = async (
 };
 
 export const ArticleGetFeed = async (
-  params: IArticleGetFeedRequestParams
+  params: IPagination
 ): Promise<IArticleList> => {
   const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/feed`, {
     params

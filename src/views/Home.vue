@@ -12,7 +12,8 @@
                     'nav-link',
                     { active: activeFeedType === feedTypes.My }
                   ]"
-                  @click="onMyFeedActivated"
+                  href="#"
+                  @click.prevent="onMyFeedActivated"
                   >Your Feed</a
                 >
               </li>
@@ -22,7 +23,8 @@
                     'nav-link',
                     { active: activeFeedType === feedTypes.Global }
                   ]"
-                  @click="onGlobalFeedActivated"
+                  href="#"
+                  @click.prevent="onGlobalFeedActivated"
                 >
                   Global Feed
                 </a>
@@ -33,7 +35,8 @@
                     'nav-link',
                     { active: activeFeedType === feedTypes.Tag }
                   ]"
-                  @click="onTagFeedActivated(activeTag)"
+                  href="#"
+                  @click.prevent="onTagFeedActivated(activeTag)"
                 >
                   #{{ activeTag }}
                 </a>
@@ -47,6 +50,13 @@
             v-else
             :key="article.slug"
             :article="article"
+          />
+
+          <common-pagination
+            :total-items="activeFeed.articlesCount"
+            :items-per-page="itemsPerPage"
+            :current-page="currentPage"
+            @page-selected="onPageSelected"
           />
         </div>
 
@@ -66,8 +76,10 @@ import HomeTags from "@/components/HomeTags.vue";
 import ArticlePreview from "@/components/ArticlePreview.vue";
 import Article from "@/store/modules/Article";
 import { IArticleList } from "@/services/realWorldApi/models";
+import IPagination from "@/services/common/IPagination";
 import User from "@/store/modules/User";
 import CommonLoader from "@/components/CommonLoader.vue";
+import CommonPagination from "@/components/CommonPagination.vue";
 
 enum FeedType {
   Global,
@@ -75,17 +87,24 @@ enum FeedType {
   Tag
 }
 
+const DEFAULT_START_PAGE = 1;
+const DEFAULT_ITEMS_PER_PAGE = 20;
+
 @Component({
   components: {
     HomeBanner,
     HomeTags,
     ArticlePreview,
-    CommonLoader
+    CommonLoader,
+    CommonPagination
   }
 })
 export default class Home extends Vue {
   feedTypes: typeof FeedType = FeedType;
   isLoading = false;
+  currentPage = DEFAULT_START_PAGE;
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
+
   activeFeedType: FeedType = FeedType.My;
   activeFeed: IArticleList = { articles: [], articlesCount: 0 };
   activeTag: string | null = null;
@@ -95,41 +114,61 @@ export default class Home extends Vue {
   }
 
   async created(): Promise<void> {
-    if (this.isLoggedIn) {
-      await this.onMyFeedActivated();
-    } else {
-      await this.onGlobalFeedActivated();
-    }
+    this.activeFeedType = this.isLoggedIn ? FeedType.My : FeedType.Global;
+    await this.fetchFeed();
   }
 
   async onGlobalFeedActivated(): Promise<void> {
-    this.isLoading = true;
-    try {
-      this.activeFeedType = FeedType.Global;
-      this.activeFeed = await Article.getList({});
-    } finally {
-      this.isLoading = false;
-    }
+    this.activeFeedType = FeedType.Global;
+    this.currentPage = DEFAULT_START_PAGE;
+    await this.fetchFeed();
   }
 
   async onMyFeedActivated(): Promise<void> {
-    this.isLoading = true;
-    try {
-      this.activeFeedType = FeedType.My;
-      this.activeFeed = await Article.getFeed();
-    } finally {
-      this.isLoading = false;
-    }
+    this.activeFeedType = FeedType.My;
+    this.currentPage = DEFAULT_START_PAGE;
+    await this.fetchFeed();
   }
 
   async onTagFeedActivated(tag: string): Promise<void> {
+    this.activeFeedType = FeedType.Tag;
+    this.currentPage = DEFAULT_START_PAGE;
+    this.activeTag = tag;
+    await this.fetchFeed();
+  }
+
+  async onPageSelected(page: number): Promise<void> {
+    this.currentPage = page;
+    await this.fetchFeed();
+  }
+
+  async fetchFeed(): Promise<void> {
     this.isLoading = true;
     try {
-      this.activeFeedType = FeedType.Tag;
-      this.activeTag = tag;
-      this.activeFeed = await Article.getList({ tag });
+      const pagination: IPagination = {
+        limit: this.itemsPerPage,
+        offset: (this.currentPage - 1) * this.itemsPerPage
+      };
+
+      switch (this.activeFeedType) {
+        case FeedType.Global:
+          this.activeFeed = await Article.getList({ ...pagination });
+          break;
+        case FeedType.Tag:
+          this.activeFeed = await Article.getList({
+            tag: this.activeTag as string,
+            ...pagination
+          });
+          break;
+        case FeedType.My:
+          this.activeFeed = await Article.getFeed(pagination);
+          break;
+        default:
+          break;
+      }
     } finally {
       this.isLoading = false;
+      window.scrollTo(0, 0);
     }
   }
 }
