@@ -6,7 +6,8 @@
           name: routesNames.profileIndex,
           params: { username: article.author.username }
         }"
-        ><img :src="authorImage" />
+      >
+        <img :src="authorImage" />
       </router-link>
       <div class="info">
         <router-link
@@ -15,12 +16,14 @@
             params: { username: article.author.username }
           }"
           class="author"
-          >{{ article.author.username }}
+        >
+          {{ article.author.username }}
         </router-link>
         <span class="date">{{ articleDate }}</span>
       </div>
       <button class="btn btn-outline-primary btn-sm pull-xs-right">
-        <i class="ion-heart"></i> {{ article.favoritesCount }}
+        <i class="ion-heart"></i>
+        {{ article.favoritesCount }}
       </button>
     </div>
     <router-link

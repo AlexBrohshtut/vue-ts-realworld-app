@@ -1,0 +1,5 @@
+{
+  "htmlWhitespaceSensitivity": "ignore",
+  "printWidth": 80,
+  "trailingComma": "none"
+}

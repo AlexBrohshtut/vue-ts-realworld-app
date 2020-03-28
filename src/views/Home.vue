@@ -14,8 +14,9 @@
                   ]"
                   href="#"
                   @click.prevent="onMyFeedActivated"
-                  >Your Feed</a
                 >
+                  Your Feed
+                </a>
               </li>
               <li class="nav-item">
                 <a
@@ -45,6 +46,7 @@
           </div>
 
           <common-loader v-if="isLoading" />
+
           <article-preview
             v-for="article in activeFeed.articles"
             v-else
