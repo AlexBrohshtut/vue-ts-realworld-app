@@ -28,12 +28,15 @@ import {
 @Module({ dynamic: true, store, name: modulesNames.article })
 class Article extends VuexModule {
   @Action
-  async get(slug: string): Promise<IArticle> {
+  async getSingle(slug: string): Promise<IArticle> {
+    debugger;
     return await ArticleGet(slug);
   }
 
   @Action
-  async getFeed(params: IArticleGetFeedRequestParams): Promise<IArticleList> {
+  async getFeed(
+    params: IArticleGetFeedRequestParams = { limit: 20, offset: 0 }
+  ): Promise<IArticleList> {
     return await ArticleGetFeed(params);
   }
 

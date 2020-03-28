@@ -38,6 +38,10 @@ class User extends VuexModule implements IUserState {
     return this._authToken || "";
   }
 
+  get isLoggedIn(): boolean {
+    return !!this._currentUser;
+  }
+
   @Mutation
   private SET_CURRENT_USER(currentUser?: ICurrentUser): void {
     this._currentUser = currentUser;

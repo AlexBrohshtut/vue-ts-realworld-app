@@ -1,4 +1,4 @@
-interface IRoutesNames {
+export interface IRoutesNames {
   home: string;
 
   authLogin: string;

@@ -1,95 +1,136 @@
 <template>
   <div class="home-page">
-    <div class="banner">
-      <div class="container">
-        <h1 class="logo-font">conduit</h1>
-        <p>A place to share your knowledge.</p>
-      </div>
-    </div>
-
+    <home-banner />
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a class="nav-link disabled" href="">Your Feed</a>
+              <li v-if="isLoggedIn" class="nav-item">
+                <a
+                  :class="[
+                    'nav-link',
+                    { active: activeFeedType === feedTypes.My }
+                  ]"
+                  @click="onMyFeedActivated"
+                  >Your Feed</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="">Global Feed</a>
+                <a
+                  :class="[
+                    'nav-link',
+                    { active: activeFeedType === feedTypes.Global }
+                  ]"
+                  @click="onGlobalFeedActivated"
+                >
+                  Global Feed
+                </a>
+              </li>
+              <li v-if="activeFeedType === feedTypes.Tag" class="nav-item">
+                <a
+                  :class="[
+                    'nav-link',
+                    { active: activeFeedType === feedTypes.Tag }
+                  ]"
+                  @click="onTagFeedActivated(activeTag)"
+                >
+                  #{{ activeTag }}
+                </a>
               </li>
             </ul>
           </div>
 
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="profile.html"
-                ><img src="http://i.imgur.com/Qr71crq.jpg"
-              /></a>
-              <div class="info">
-                <a href="" class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
-
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="profile.html"
-                ><img src="http://i.imgur.com/N4VcUeJ.jpg"
-              /></a>
-              <div class="info">
-                <a href="" class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>
-                The song you won't ever stop singing. No matter how hard you
-                try.
-              </h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
+          <common-loader v-if="isLoading" />
+          <article-preview
+            v-for="article in activeFeed.articles"
+            v-else
+            :key="article.slug"
+            :article="article"
+          />
         </div>
 
         <div class="col-md-3">
-          <div class="sidebar">
-            <p>Popular Tags</p>
-
-            <div class="tag-list">
-              <a href="" class="tag-pill tag-default">programming</a>
-              <a href="" class="tag-pill tag-default">javascript</a>
-              <a href="" class="tag-pill tag-default">emberjs</a>
-              <a href="" class="tag-pill tag-default">angularjs</a>
-              <a href="" class="tag-pill tag-default">react</a>
-              <a href="" class="tag-pill tag-default">mean</a>
-              <a href="" class="tag-pill tag-default">node</a>
-              <a href="" class="tag-pill tag-default">rails</a>
-            </div>
-          </div>
+          <home-tags @tag-selected="onTagFeedActivated" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script type="ts">
+<script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import HomeBanner from "@/components/HomeBanner.vue";
+import HomeTags from "@/components/HomeTags.vue";
+import ArticlePreview from "@/components/ArticlePreview.vue";
+import Article from "@/store/modules/Article";
+import { IArticleList } from "@/services/realWorldApi/models";
+import User from "@/store/modules/User";
+import CommonLoader from "@/components/CommonLoader.vue";
 
-@Component
-export default class Home extends Vue {}
+enum FeedType {
+  Global,
+  My,
+  Tag
+}
+
+@Component({
+  components: {
+    HomeBanner,
+    HomeTags,
+    ArticlePreview,
+    CommonLoader
+  }
+})
+export default class Home extends Vue {
+  feedTypes: typeof FeedType = FeedType;
+  isLoading = false;
+  activeFeedType: FeedType = FeedType.My;
+  activeFeed: IArticleList = { articles: [], articlesCount: 0 };
+  activeTag: string | null = null;
+
+  get isLoggedIn(): boolean {
+    return User.isLoggedIn;
+  }
+
+  async created(): Promise<void> {
+    if (this.isLoggedIn) {
+      await this.onMyFeedActivated();
+    } else {
+      await this.onGlobalFeedActivated();
+    }
+  }
+
+  async onGlobalFeedActivated(): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.activeFeedType = FeedType.Global;
+      this.activeFeed = await Article.getList({});
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async onMyFeedActivated(): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.activeFeedType = FeedType.My;
+      this.activeFeed = await Article.getFeed();
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async onTagFeedActivated(tag: string): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.activeFeedType = FeedType.Tag;
+      this.activeTag = tag;
+      this.activeFeed = await Article.getList({ tag });
+    } finally {
+      this.isLoading = false;
+    }
+  }
+}
 </script>
