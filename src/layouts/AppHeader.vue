@@ -5,24 +5,22 @@
         conduit
       </router-link>
       <ul class="nav navbar-nav pull-xs-right">
-        <li class="nav-item">
-          <!-- Add "active" class when you're on that page" -->
-          <a class="nav-link active" href="">Home</a>
+        <li
+          v-for="menuItem in menuItems"
+          :key="menuItem.title"
+          class="nav-item"
+        >
+          <router-link
+            :to="{ name: menuItem.routeName }"
+            :exact-active-class="`active`"
+            class="nav-link"
+          >
+            <i v-if="menuItem.icon" :class="menuItem.icon"></i>
+            {{ menuItem.title }}
+          </router-link>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="">
-            <i class="ion-compose"></i>
-            &nbsp;New Post
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="">
-            <i class="ion-gear-a"></i>
-            &nbsp;Settings
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="">Sign up</a>
+        <li v-if="isLoggedIn" class="nav-item">
+          <a href="#" class="nav-link" @click.prevent="logout">Sign out</a>
         </li>
       </ul>
     </div>
@@ -36,12 +34,57 @@ import Component from "vue-class-component";
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import User from "@/store/modules/User";
 
+interface IMenuItem {
+  title: string;
+  icon?: string;
+  routeName: string;
+  isShow: boolean;
+}
+
 @Component
 export default class AppHeader extends Vue {
   routesNames: Readonly<IRoutesNames> = RoutesNames;
 
+  get menuItems(): IMenuItem[] {
+    const menuItems = [
+      {
+        title: "Home",
+        routeName: RoutesNames.home,
+        isShow: true
+      },
+      {
+        title: "New Post",
+        icon: "ion-compose",
+        routeName: RoutesNames.articleCreate,
+        isShow: this.isLoggedIn
+      },
+      {
+        title: "Settings",
+        routeName: RoutesNames.profileSettings,
+        icon: "ion-gear-a",
+        isShow: this.isLoggedIn
+      },
+      {
+        title: "Sign up",
+        routeName: RoutesNames.authRegister,
+        isShow: !this.isLoggedIn
+      },
+      {
+        title: "Sign in",
+        routeName: RoutesNames.authLogin,
+        isShow: !this.isLoggedIn
+      }
+    ];
+    return menuItems.filter(menuItem => menuItem.isShow);
+  }
+
   get isLoggedIn(): boolean {
     return User.isLoggedIn;
+  }
+
+  logout(): void {
+    User.logout();
+    this.$router.push({ name: RoutesNames.home });
   }
 }
 </script>

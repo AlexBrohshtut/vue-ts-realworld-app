@@ -89,6 +89,12 @@ class User extends VuexModule implements IUserState {
     const res = await UserUpdate(params);
     this.SET_FROM_IUSER(res);
   }
+
+  @Action
+  logout(): void {
+    this.SET_AUTH_TOKEN(undefined);
+    this.SET_CURRENT_USER(undefined);
+  }
 }
 
 export default getModule(User);
