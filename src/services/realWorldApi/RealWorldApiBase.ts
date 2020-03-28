@@ -39,7 +39,7 @@ const OnResponseFailure = (error: any): Promise<any> => {
 };
 
 const instance: Readonly<AxiosInstance> = axios.create({
-  baseURL: process.env.REAL_WORLD_API_URL,
+  baseURL: process.env.VUE_APP_REAL_WORLD_API_URL,
   timeout: 5000
 });
 
