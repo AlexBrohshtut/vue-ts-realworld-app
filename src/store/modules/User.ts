@@ -27,7 +27,7 @@ import { TransformICurrentUserToIUser } from "../transformers/IUserTransformers"
 
 const AUTH_TOKEN_KEY = "realWorldAuthToken";
 
-@Module({ dynamic: true, store, name: modulesNames.user })
+@Module({ dynamic: true, namespaced: true, store, name: modulesNames.user })
 class User extends VuexModule implements IUserState {
   private _currentUser?: ICurrentUser;
   private _authToken?: string = LocalStorageUtils.getItem(AUTH_TOKEN_KEY);
@@ -66,31 +66,32 @@ class User extends VuexModule implements IUserState {
     this.SET_AUTH_TOKEN(user.token);
   }
 
-  @Action
+  @Action({ rawError: true })
   async fetchCurrentUser(): Promise<void> {
     const res = await UserGetCurrent();
     this.SET_FROM_IUSER(res);
   }
 
-  @Action
+  @Action({ rawError: true })
   async login(params: IUserLoginRequestParams): Promise<void> {
     const res = await UserLogin(params);
     this.SET_FROM_IUSER(res);
   }
 
-  @Action
+  @Action({ rawError: true })
   async register(params: IUserRegisterRequestParams): Promise<void> {
     const res = await UserRegister(params);
+    debugger;
     this.SET_FROM_IUSER(res);
   }
 
-  @Action
+  @Action({ rawError: true })
   async update(params: IUserUpdateRequestParams): Promise<void> {
     const res = await UserUpdate(params);
     this.SET_FROM_IUSER(res);
   }
 
-  @Action
+  @Action({ rawError: true })
   logout(): void {
     this.SET_AUTH_TOKEN(undefined);
     this.SET_CURRENT_USER(undefined);

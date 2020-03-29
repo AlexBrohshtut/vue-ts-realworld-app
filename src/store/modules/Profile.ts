@@ -10,19 +10,19 @@ import {
 import store from "../index";
 import modulesNames from "../modulesNames";
 
-@Module({ dynamic: true, store, name: modulesNames.profile })
+@Module({ dynamic: true, namespaced: true, store, name: modulesNames.profile })
 class Profile extends VuexModule {
-  @Action
+  @Action({ rawError: true })
   async get(username: string): Promise<IProfile> {
     return await ProfileGet(username);
   }
 
-  @Action
+  @Action({ rawError: true })
   async follow(username: string): Promise<IProfile> {
     return await ProfileFollow(username);
   }
 
-  @Action
+  @Action({ rawError: true })
   async unFollow(username: string): Promise<IProfile> {
     return await ProfileUnfollow(username);
   }
