@@ -5,6 +5,8 @@ import routesNames from "@/router/routesNames";
 import HttpStatusCodes from "@/services/common/HttpStatusCodes";
 import User from "@/store/modules/User";
 
+import { transformErrors } from "./Utils";
+
 const AuthInterceptor = (config: AxiosRequestConfig): AxiosRequestConfig => {
   const accessToken = User.authToken;
   if (accessToken) config.headers.Authorization = `Token ${accessToken}`;
@@ -16,6 +18,8 @@ const OnResponseSuccess = (response: AxiosResponse<any>): AxiosResponse<any> =>
 
 const OnResponseFailure = (error: any): Promise<any> => {
   const httpStatus = error?.response?.status;
+
+  const errors = transformErrors(error?.response?.data?.errors);
 
   switch (httpStatus) {
     case HttpStatusCodes.UNAUTHORIZED:
@@ -36,7 +40,7 @@ const OnResponseFailure = (error: any): Promise<any> => {
       //TODO: Notify about unknown status code
       break;
   }
-  return Promise.reject(error);
+  return Promise.reject(errors);
 };
 
 const instance: Readonly<AxiosInstance> = axios.create({
