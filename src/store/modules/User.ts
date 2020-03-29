@@ -29,10 +29,10 @@ const AUTH_TOKEN_KEY = "realWorldAuthToken";
 
 @Module({ dynamic: true, namespaced: true, store, name: modulesNames.user })
 class User extends VuexModule implements IUserState {
-  private _currentUser?: ICurrentUser;
+  private _currentUser?: ICurrentUser | null = null;
   private _authToken?: string = LocalStorageUtils.getItem(AUTH_TOKEN_KEY);
 
-  get currentUser(): ICurrentUser | undefined {
+  get currentUser(): ICurrentUser | undefined | null {
     return this._currentUser;
   }
 
@@ -60,8 +60,8 @@ class User extends VuexModule implements IUserState {
     }
   }
 
-  @Mutation
-  private SET_FROM_IUSER(user: IUser): void {
+  @Action({ rawError: true })
+  private setFromIUser(user: IUser): void {
     this.SET_CURRENT_USER(TransformICurrentUserToIUser(user));
     this.SET_AUTH_TOKEN(user.token);
   }
@@ -69,26 +69,25 @@ class User extends VuexModule implements IUserState {
   @Action({ rawError: true })
   async fetchCurrentUser(): Promise<void> {
     const res = await UserGetCurrent();
-    this.SET_FROM_IUSER(res);
+    this.setFromIUser(res);
   }
 
   @Action({ rawError: true })
   async login(params: IUserLoginRequestParams): Promise<void> {
     const res = await UserLogin(params);
-    this.SET_FROM_IUSER(res);
+    this.setFromIUser(res);
   }
 
   @Action({ rawError: true })
   async register(params: IUserRegisterRequestParams): Promise<void> {
     const res = await UserRegister(params);
-    debugger;
-    this.SET_FROM_IUSER(res);
+    this.setFromIUser(res);
   }
 
   @Action({ rawError: true })
   async update(params: IUserUpdateRequestParams): Promise<void> {
     const res = await UserUpdate(params);
-    this.SET_FROM_IUSER(res);
+    this.setFromIUser(res);
   }
 
   @Action({ rawError: true })

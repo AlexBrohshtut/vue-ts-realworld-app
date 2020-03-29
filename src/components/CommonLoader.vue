@@ -11,6 +11,10 @@ const CommonLoaderProps = Vue.extend({
     size: {
       type: Number,
       default: 10
+    },
+    margin: {
+      type: Number,
+      default: 60
     }
   }
 });
@@ -19,7 +23,8 @@ const CommonLoaderProps = Vue.extend({
 export default class CommonLoader extends CommonLoaderProps {
   get styleVars(): any {
     return {
-      "--loader-size": `${this.size}em`
+      "--loader-size": `${this.size}em`,
+      "--margin": `${this.margin}px`
     };
   }
 }
@@ -34,7 +39,7 @@ export default class CommonLoader extends CommonLoaderProps {
   height: var(--loader-size);
 }
 .loader {
-  margin: 60px auto;
+  margin: var(--margin) auto;
   font-size: 10px;
   position: relative;
   text-indent: -9999em;

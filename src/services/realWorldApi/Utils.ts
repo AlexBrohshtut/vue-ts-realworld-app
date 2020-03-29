@@ -1,7 +1,4 @@
-const capitalizeFirstLetter = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
+import { capitalizeFirstLetter } from "@/utils/StringUtils";
 export const transformErrors = (rawErrors: any): string[] => {
   const errors = Object.entries(
     rawErrors || { unknown: ["Unknown error occurred"] }
