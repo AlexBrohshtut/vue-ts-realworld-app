@@ -30,7 +30,7 @@ export const ArticleGetFeed = async (
 };
 
 export const ArticleGet = async (slug: string): Promise<IArticle> => {
-  const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/:${slug}`);
+  const res = await RealWorldApiInstance.get(`${ARTICLES_PATH}/${slug}`);
   return res?.data?.article as IArticle;
 };
 
@@ -47,14 +47,14 @@ export const ArticleUpdate = async (
   slug: string,
   params: IArticleUpdateRequestParams
 ): Promise<IArticle> => {
-  const res = await RealWorldApiInstance.put(`${ARTICLES_PATH}/:${slug}`, {
+  const res = await RealWorldApiInstance.put(`${ARTICLES_PATH}/${slug}`, {
     article: params
   });
   return res?.data?.article as IArticle;
 };
 
 export const ArticleDelete = async (slug: string): Promise<IArticle> => {
-  const res = await RealWorldApiInstance.delete(`${ARTICLES_PATH}/:${slug}`);
+  const res = await RealWorldApiInstance.delete(`${ARTICLES_PATH}/${slug}`);
   return res?.data?.article as IArticle;
 };
 
@@ -63,7 +63,7 @@ export const ArticleAddComment = async (
   params: IArticleAddCommentRequestParams
 ): Promise<IComment> => {
   const res = await RealWorldApiInstance.post(
-    `${ARTICLES_PATH}/:${slug}/comments`,
+    `${ARTICLES_PATH}/${slug}/comments`,
     {
       comment: params
     }
@@ -73,7 +73,7 @@ export const ArticleAddComment = async (
 
 export const ArticleGetComments = async (slug: string): Promise<IComment[]> => {
   const res = await RealWorldApiInstance.get(
-    `${ARTICLES_PATH}/:${slug}/comments`
+    `${ARTICLES_PATH}/${slug}/comments`
   );
   return res?.data?.comments as IComment[];
 };
@@ -83,7 +83,7 @@ export const ArticleDeleteComment = async (
   commentId: number
 ): Promise<void> => {
   await RealWorldApiInstance.get(
-    `${ARTICLES_PATH}/:${slug}/comments/:${commentId}`
+    `${ARTICLES_PATH}/${slug}/comments/${commentId}`
   );
 };
 
@@ -91,7 +91,7 @@ export const ArticleAddToFavorites = async (
   slug: string
 ): Promise<IArticle> => {
   const res = await RealWorldApiInstance.post(
-    `${ARTICLES_PATH}/:${slug}/favorite`
+    `${ARTICLES_PATH}/${slug}/favorite`
   );
   return res?.data?.article as IArticle;
 };
@@ -100,7 +100,7 @@ export const ArticleRemoveFromFavorites = async (
   slug: string
 ): Promise<IArticle> => {
   const res = await RealWorldApiInstance.delete(
-    `${ARTICLES_PATH}/:${slug}/favorite`
+    `${ARTICLES_PATH}/${slug}/favorite`
   );
   return res?.data?.article as IArticle;
 };
