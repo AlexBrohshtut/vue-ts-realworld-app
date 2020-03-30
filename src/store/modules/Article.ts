@@ -1,4 +1,11 @@
-import { Action, getModule, Module, VuexModule } from "vuex-module-decorators";
+import Vue from "vue";
+import {
+  Action,
+  getModule,
+  Module,
+  Mutation,
+  VuexModule
+} from "vuex-module-decorators";
 
 import IPagination from "@/services/common/IPagination";
 import {
@@ -29,27 +36,65 @@ import modulesNames from "../modulesNames";
 
 @Module({ dynamic: true, namespaced: true, store, name: modulesNames.article })
 class Article extends VuexModule {
+  private _articlesCache: Record<string, IArticle> = {};
+
+  get articlesCache(): Record<string, IArticle> {
+    return this._articlesCache;
+  }
+
+  @Mutation
+  addArticleToCache(article: IArticle): void {
+    const cachedArticle = this._articlesCache[article.slug];
+    if (!cachedArticle || article.updatedAt >= cachedArticle.updatedAt) {
+      Vue.set(this._articlesCache, article.slug, article);
+    }
+  }
+
+  @Mutation
+  clearArticlesCache(): void {
+    this._articlesCache = {};
+  }
+
+  @Mutation
+  removeArticleFromCache(slug: string): void {
+    Vue.delete(this._articlesCache, slug);
+  }
+
+  @Action({ rawError: true })
+  addMultipleArticlesToCache(articles: IArticle[]): void {
+    articles.forEach(article => this.addArticleToCache(article));
+  }
+
   @Action({ rawError: true })
   async getSingle(slug: string): Promise<IArticle> {
-    debugger;
-    return await ArticleGet(slug);
+    const res = await ArticleGet(slug);
+    this.addArticleToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
   async getFeed(
     params: IPagination = { limit: 20, offset: 0 }
   ): Promise<IArticleList> {
-    return await ArticleGetFeed(params);
+    const res = await ArticleGetFeed(params);
+    this.clearArticlesCache();
+    this.addMultipleArticlesToCache(res.articles);
+    return res;
   }
 
   @Action({ rawError: true })
   async getList(params: IArticleGetListRequestParams): Promise<IArticleList> {
-    return await ArticleGetList(params);
+    const res = await ArticleGetList(params);
+    this.clearArticlesCache();
+    this.addMultipleArticlesToCache(res.articles);
+    return res;
   }
 
   @Action({ rawError: true })
   async create(params: IArticleCreateRequestParams): Promise<IArticle> {
-    return await ArticleCreate(params);
+    const res = await ArticleCreate(params);
+    this.addArticleToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
@@ -57,22 +102,30 @@ class Article extends VuexModule {
     slug: string,
     params: IArticleUpdateRequestParams
   ): Promise<IArticle> {
-    return await ArticleUpdate(slug, params);
+    const res = await ArticleUpdate(slug, params);
+    this.addArticleToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
   async delete(slug: string): Promise<IArticle> {
-    return await ArticleDelete(slug);
+    const res = await ArticleDelete(slug);
+    this.removeArticleFromCache(res.slug);
+    return res;
   }
 
   @Action({ rawError: true })
   async addToFavorites(slug: string): Promise<IArticle> {
-    return await ArticleAddToFavorites(slug);
+    const res = await ArticleAddToFavorites(slug);
+    this.addArticleToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
   async removeFromFavorites(slug: string): Promise<IArticle> {
-    return await ArticleRemoveFromFavorites(slug);
+    const res = await ArticleRemoveFromFavorites(slug);
+    this.addArticleToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })

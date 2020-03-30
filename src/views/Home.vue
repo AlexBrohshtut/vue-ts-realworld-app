@@ -48,13 +48,21 @@
           <common-loader v-if="isLoading" />
 
           <article-preview
-            v-for="article in activeFeed.articles"
+            v-for="article in articles"
             v-else
-            :key="article.slug"
+            :key="`${article.slug}_${article.updatedAt}`"
             :article="article"
           />
 
+          <div
+            v-if="articles.length === 0 && !isLoading"
+            class="article-preview"
+          >
+            No articles are here... yet.
+          </div>
+
           <common-pagination
+            v-show="!isLoading"
             :total-items="activeFeed.articlesCount"
             :items-per-page="itemsPerPage"
             :current-page="currentPage"
@@ -80,7 +88,7 @@ import CommonPagination from "@/components/CommonPagination.vue";
 import HomeBanner from "@/components/HomeBanner.vue";
 import HomeTags from "@/components/HomeTags.vue";
 import IPagination from "@/services/common/IPagination";
-import { IArticleList } from "@/services/realWorldApi/models";
+import { IArticle, IArticleList } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import User from "@/store/modules/User";
 
@@ -114,6 +122,16 @@ export default class Home extends Vue {
 
   get isLoggedIn(): boolean {
     return User.isLoggedIn;
+  }
+
+  get articlesCache(): Record<string, IArticle> {
+    return Article.articlesCache;
+  }
+
+  get articles(): IArticle[] {
+    return this.activeFeed.articles.map(
+      article => this.articlesCache[article.slug]
+    );
   }
 
   async created(): Promise<void> {
