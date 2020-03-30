@@ -21,7 +21,14 @@
         </router-link>
         <span class="date">{{ articleDate }}</span>
       </div>
-      <button class="btn btn-outline-primary btn-sm pull-xs-right">
+      <button
+        :class="[
+          'btn btn-sm pull-xs-right',
+          article.favorited ? 'btn-primary' : 'btn-outline-primary'
+        ]"
+        :disabled="isLoading"
+        @click="toggleFavorites"
+      >
         <i class="ion-heart"></i>
         {{ article.favoritesCount }}
       </button>
@@ -57,6 +64,7 @@ import Component from "vue-class-component";
 
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import { IArticle } from "@/services/realWorldApi/models";
+import Article from "@/store/modules/Article";
 import DateUtils from "@/utils/DateUtils";
 
 const MAX_VISIBLE_TAGS = 5;
@@ -72,6 +80,8 @@ const ArticlePreviewProps = Vue.extend({
 
 @Component
 export default class ArticlePreview extends ArticlePreviewProps {
+  isLoading = false;
+
   routesNames: Readonly<IRoutesNames> = RoutesNames;
 
   get authorImage(): string {
@@ -90,6 +100,17 @@ export default class ArticlePreview extends ArticlePreviewProps {
 
   get nonVisibleTagsNumber(): number {
     return this.article.tagList.length - MAX_VISIBLE_TAGS;
+  }
+
+  async toggleFavorites(): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.article.favorited
+        ? await Article.removeFromFavorites(this.article.slug)
+        : await Article.addToFavorites(this.article.slug);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
 </script>
