@@ -19,9 +19,16 @@
             {{ menuItem.title }}
           </router-link>
         </li>
-        <li v-if="isLoggedIn" class="nav-item">
-          <a href="#" class="nav-link" @click.prevent="logout">Sign out</a>
-        </li>
+        <template v-if="isLoggedIn">
+          <li class="nav-item">
+            <a href="#" class="nav-link" @click.prevent="goToProfile">
+              {{ userName }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" @click.prevent="logout">Sign out</a>
+          </li>
+        </template>
       </ul>
     </div>
   </nav>
@@ -82,9 +89,19 @@ export default class AppHeader extends Vue {
     return User.isLoggedIn;
   }
 
+  get userName(): string {
+    return User.currentUser?.username || "";
+  }
+
   logout(): void {
     User.logout();
     this.$router.push({ name: RoutesNames.home });
+  }
+  goToProfile(): void {
+    this.$router.push({
+      name: RoutesNames.profileIndex,
+      params: { username: this.userName }
+    });
   }
 }
 </script>
