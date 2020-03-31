@@ -4,69 +4,15 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
-          <div class="feed-toggle">
-            <ul class="nav nav-pills outline-active">
-              <li v-if="isLoggedIn" class="nav-item">
-                <a
-                  :class="[
-                    'nav-link',
-                    { active: activeFeedType === feedTypes.My }
-                  ]"
-                  href="#"
-                  @click.prevent="onMyFeedActivated"
-                >
-                  Your Feed
-                </a>
-              </li>
-              <li class="nav-item">
-                <a
-                  :class="[
-                    'nav-link',
-                    { active: activeFeedType === feedTypes.Global }
-                  ]"
-                  href="#"
-                  @click.prevent="onGlobalFeedActivated"
-                >
-                  Global Feed
-                </a>
-              </li>
-              <li v-if="activeFeedType === feedTypes.Tag" class="nav-item">
-                <a
-                  :class="[
-                    'nav-link',
-                    { active: activeFeedType === feedTypes.Tag }
-                  ]"
-                  href="#"
-                  @click.prevent="onTagFeedActivated(activeTag)"
-                >
-                  #{{ activeTag }}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <common-loader v-if="isLoading" />
-
-          <article-preview
-            v-for="article in articles"
-            v-else
-            :key="`${article.slug}_${article.updatedAt}`"
-            :article="article"
-          />
-
-          <div
-            v-if="articles.length === 0 && !isLoading"
-            class="article-preview"
-          >
-            No articles are here... yet.
-          </div>
-
-          <common-pagination
-            v-show="!isLoading"
-            :total-items="activeFeed.articlesCount"
+          <common-feed
+            :tabs="tabs"
+            :active-tab-id="activeTabId"
+            :is-loading="isLoading"
+            :feed="activeFeed"
             :items-per-page="itemsPerPage"
             :current-page="currentPage"
-            @page-selected="onPageSelected"
+            @page-changed="onPageChanged"
+            @tab-changed="onTabChanged"
           />
         </div>
 
@@ -82,9 +28,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 
-import ArticlePreview from "@/components/ArticlePreview.vue";
-import CommonLoader from "@/components/CommonLoader.vue";
-import CommonPagination from "@/components/CommonPagination.vue";
+import CommonFeed, { IFeedTab } from "@/components/CommonFeed.vue";
 import HomeBanner from "@/components/HomeBanner.vue";
 import HomeTags from "@/components/HomeTags.vue";
 import IPagination from "@/services/common/IPagination";
@@ -93,9 +37,9 @@ import Article from "@/store/modules/Article";
 import User from "@/store/modules/User";
 
 enum FeedType {
-  Global,
-  My,
-  Tag
+  Global = "Global",
+  My = "My",
+  Tag = "Tag"
 }
 
 const DEFAULT_START_PAGE = 1;
@@ -105,9 +49,7 @@ const DEFAULT_ITEMS_PER_PAGE = 20;
   components: {
     HomeBanner,
     HomeTags,
-    ArticlePreview,
-    CommonLoader,
-    CommonPagination
+    CommonFeed
   }
 })
 export default class Home extends Vue {
@@ -116,7 +58,7 @@ export default class Home extends Vue {
   currentPage = DEFAULT_START_PAGE;
   itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
-  activeFeedType: FeedType = FeedType.My;
+  activeTabId: FeedType = FeedType.My;
   activeFeed: IArticleList = { articles: [], articlesCount: 0 };
   activeTag: string | null = null;
 
@@ -134,31 +76,72 @@ export default class Home extends Vue {
     );
   }
 
+  get tabs(): IFeedTab[] {
+    const res: IFeedTab[] = [];
+
+    if (this.isLoggedIn) {
+      res.push({
+        id: FeedType.My,
+        title: "Your Feed"
+      });
+    }
+
+    res.push({
+      id: FeedType.Global,
+      title: "Global Feed"
+    });
+
+    if (this.activeTag && this.activeTabId === FeedType.Tag) {
+      res.push({
+        id: FeedType.Tag,
+        title: `#${this.activeTag}`
+      });
+    }
+    return res;
+  }
+
   async created(): Promise<void> {
-    this.activeFeedType = this.isLoggedIn ? FeedType.My : FeedType.Global;
+    this.activeTabId = this.isLoggedIn ? FeedType.My : FeedType.Global;
     await this.fetchFeed();
   }
 
+  async onTabChanged(tabId: FeedType): Promise<void> {
+    switch (tabId) {
+      case FeedType.My:
+        await this.onMyFeedActivated();
+        break;
+      case FeedType.Global:
+        await this.onGlobalFeedActivated();
+        break;
+      case FeedType.Tag:
+        await this.onTagFeedActivated(this.activeTag || "");
+        break;
+
+      default:
+        throw new Error(`Unexpected tabId: ${tabId}`);
+    }
+  }
+
   async onGlobalFeedActivated(): Promise<void> {
-    this.activeFeedType = FeedType.Global;
+    this.activeTabId = FeedType.Global;
     this.currentPage = DEFAULT_START_PAGE;
     await this.fetchFeed();
   }
 
   async onMyFeedActivated(): Promise<void> {
-    this.activeFeedType = FeedType.My;
+    this.activeTabId = FeedType.My;
     this.currentPage = DEFAULT_START_PAGE;
     await this.fetchFeed();
   }
 
   async onTagFeedActivated(tag: string): Promise<void> {
-    this.activeFeedType = FeedType.Tag;
+    this.activeTabId = FeedType.Tag;
     this.currentPage = DEFAULT_START_PAGE;
     this.activeTag = tag;
     await this.fetchFeed();
   }
 
-  async onPageSelected(page: number): Promise<void> {
+  async onPageChanged(page: number): Promise<void> {
     this.currentPage = page;
     await this.fetchFeed();
   }
@@ -171,7 +154,7 @@ export default class Home extends Vue {
         offset: (this.currentPage - 1) * this.itemsPerPage
       };
 
-      switch (this.activeFeedType) {
+      switch (this.activeTabId) {
         case FeedType.Global:
           this.activeFeed = await Article.getList({ ...pagination });
           break;

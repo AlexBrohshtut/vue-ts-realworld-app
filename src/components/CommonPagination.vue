@@ -6,7 +6,7 @@
         :key="page"
         :class="['page-item', { active: currentPage === page }]"
       >
-        <a href="#" class="page-link" @click.prevent="selectPage(page)">
+        <a href="#" class="page-link" @click.prevent="changePage(page)">
           {{ page }}
         </a>
       </li>
@@ -45,8 +45,8 @@ export default class CommonPagination extends CommonPaginationProps {
     return res;
   }
 
-  selectPage(page: number): void {
-    this.$emit("page-selected", page);
+  changePage(page: number): void {
+    this.$emit("page-changed", page);
   }
 }
 </script>
