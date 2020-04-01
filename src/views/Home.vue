@@ -31,7 +31,10 @@ import Component from "vue-class-component";
 import CommonFeed, { IFeedTab } from "@/components/CommonFeed.vue";
 import HomeBanner from "@/components/HomeBanner.vue";
 import HomeTags from "@/components/HomeTags.vue";
-import IPagination from "@/services/common/IPagination";
+import IPagination, {
+  DEFAULT_ITEMS_PER_PAGE,
+  DEFAULT_START_PAGE
+} from "@/services/common/IPagination";
 import { IArticle, IArticleList } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import User from "@/store/modules/User";
@@ -41,9 +44,6 @@ enum FeedType {
   My = "My",
   Tag = "Tag"
 }
-
-const DEFAULT_START_PAGE = 1;
-const DEFAULT_ITEMS_PER_PAGE = 20;
 
 @Component({
   components: {
@@ -108,10 +108,10 @@ export default class Home extends Vue {
   async onTabChanged(tabId: FeedType): Promise<void> {
     switch (tabId) {
       case FeedType.My:
-        await this.onMyFeedActivated();
-        break;
       case FeedType.Global:
-        await this.onGlobalFeedActivated();
+        this.activeTabId = tabId;
+        this.currentPage = DEFAULT_START_PAGE;
+        await this.fetchFeed();
         break;
       case FeedType.Tag:
         await this.onTagFeedActivated(this.activeTag || "");
@@ -120,18 +120,6 @@ export default class Home extends Vue {
       default:
         throw new Error(`Unexpected tabId: ${tabId}`);
     }
-  }
-
-  async onGlobalFeedActivated(): Promise<void> {
-    this.activeTabId = FeedType.Global;
-    this.currentPage = DEFAULT_START_PAGE;
-    await this.fetchFeed();
-  }
-
-  async onMyFeedActivated(): Promise<void> {
-    this.activeTabId = FeedType.My;
-    this.currentPage = DEFAULT_START_PAGE;
-    await this.fetchFeed();
   }
 
   async onTagFeedActivated(tag: string): Promise<void> {
