@@ -35,8 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
+import { Component, Vue } from "vue-property-decorator";
 
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import User from "@/store/modules/User";

@@ -69,8 +69,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import Component from "vue-class-component";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 import CommonLoader from "@/components/CommonLoader.vue";
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
@@ -84,21 +83,14 @@ export enum AuthPageMode {
   Login = "Login"
 }
 
-const AuthPageProps = Vue.extend({
-  props: {
-    mode: {
-      type: String as PropType<AuthPageMode>,
-      required: true
-    }
-  }
-});
-
 @Component({
   components: {
     CommonLoader
   }
 })
-export default class AuthPage extends AuthPageProps {
+export default class AuthPage extends Vue {
+  @Prop({ required: true }) mode!: AuthPageMode;
+
   routesNames: Readonly<IRoutesNames> = RoutesNames;
   isLoading = false;
 

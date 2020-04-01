@@ -59,8 +59,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import Component from "vue-class-component";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import { IArticle } from "@/services/realWorldApi/models";
@@ -69,17 +68,10 @@ import DateUtils from "@/utils/DateUtils";
 
 const MAX_VISIBLE_TAGS = 5;
 
-const ArticlePreviewProps = Vue.extend({
-  props: {
-    article: {
-      type: Object as PropType<IArticle>,
-      required: true
-    }
-  }
-});
-
 @Component
-export default class ArticlePreview extends ArticlePreviewProps {
+export default class ArticlePreview extends Vue {
+  @Prop({ required: true }) readonly article!: IArticle;
+
   isLoading = false;
 
   routesNames: Readonly<IRoutesNames> = RoutesNames;

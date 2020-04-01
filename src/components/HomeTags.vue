@@ -20,8 +20,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
 import CommonLoader from "@/components/CommonLoader.vue";
 import Tags from "@/store/modules/Tags";
@@ -46,8 +45,9 @@ export default class HomeTags extends Vue {
     }
   }
 
-  selectTag(tag: string): void {
-    this.$emit("tag-selected", tag);
+  @Emit("tag-selected")
+  selectTag(tag: string): string {
+    return tag;
   }
 }
 </script>

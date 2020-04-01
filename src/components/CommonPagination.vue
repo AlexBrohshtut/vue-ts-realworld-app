@@ -15,28 +15,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
-
-const CommonPaginationProps = Vue.extend({
-  props: {
-    totalItems: {
-      type: Number,
-      required: true
-    },
-    itemsPerPage: {
-      type: Number,
-      required: true
-    },
-    currentPage: {
-      type: Number,
-      required: true
-    }
-  }
-});
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class CommonPagination extends CommonPaginationProps {
+export default class CommonPagination extends Vue {
+  @Prop({ required: true }) totalItems!: number;
+  @Prop({ required: true }) itemsPerPage!: number;
+  @Prop({ required: true }) currentPage!: number;
+
   get pages(): number[] {
     const res = Array.from(
       Array(Math.ceil(this.totalItems / this.itemsPerPage) + 1).keys()
@@ -45,8 +31,9 @@ export default class CommonPagination extends CommonPaginationProps {
     return res;
   }
 
-  changePage(page: number): void {
-    this.$emit("page-changed", page);
+  @Emit("page-changed")
+  changePage(page: number): number {
+    return page;
   }
 }
 </script>

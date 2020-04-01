@@ -38,8 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import Component from "vue-class-component";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 import ArticlePreview from "@/components/ArticlePreview.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
@@ -51,35 +50,6 @@ export interface IFeedTab {
   title: string;
 }
 
-const CommonFeedProps = Vue.extend({
-  props: {
-    tabs: {
-      type: Array as PropType<IFeedTab[]>,
-      required: true
-    },
-    activeTabId: {
-      type: String,
-      default: ""
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-    feed: {
-      type: Object as PropType<IArticleList>,
-      required: true
-    },
-    itemsPerPage: {
-      type: Number,
-      required: true
-    },
-    currentPage: {
-      type: Number,
-      required: true
-    }
-  }
-});
-
 @Component({
   components: {
     CommonLoader,
@@ -87,12 +57,21 @@ const CommonFeedProps = Vue.extend({
     CommonPagination
   }
 })
-export default class CommonFeed extends CommonFeedProps {
-  onTabChanged(tabId: string): void {
-    this.$emit("tab-changed", tabId);
+export default class CommonFeed extends Vue {
+  @Prop({ required: true }) tabs!: IFeedTab[];
+  @Prop({ default: "" }) activeTabId!: string;
+  @Prop({ default: false }) isLoading!: boolean;
+  @Prop({ required: true }) feed!: IArticleList;
+  @Prop({ required: true }) itemsPerPage!: number;
+  @Prop({ required: true }) currentPage!: number;
+
+  @Emit("tab-changed")
+  onTabChanged(tabId: string): string {
+    return tabId;
   }
-  onPageChanged(page: number): void {
-    this.$emit("page-changed", page);
+  @Emit("page-changed")
+  onPageChanged(page: number): number {
+    return page;
   }
 }
 </script>

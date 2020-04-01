@@ -3,24 +3,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
-
-const CommonLoaderProps = Vue.extend({
-  props: {
-    size: {
-      type: Number,
-      default: 10
-    },
-    margin: {
-      type: Number,
-      default: 60
-    }
-  }
-});
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class CommonLoader extends CommonLoaderProps {
+export default class CommonLoader extends Vue {
+  @Prop({ default: 10 }) size!: number;
+  @Prop({ default: 60 }) margin!: number;
+
   get styleVars(): any {
     return {
       "--loader-size": `${this.size}em`,
