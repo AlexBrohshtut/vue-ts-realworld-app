@@ -22,6 +22,7 @@
         <template v-if="isLoggedIn">
           <li class="nav-item">
             <a href="#" class="nav-link" @click.prevent="goToProfile">
+              <img v-if="userImage" :src="userImage" class="user-pic" />
               {{ userName }}
             </a>
           </li>
@@ -98,6 +99,8 @@ export default class AppHeader extends Vue {
       name: this.$routesNames.profileIndex,
       params: { username: this.userName }
     });
+  get userImage(): string | null | undefined {
+    return User.currentUser?.image;
   }
 }
 </script>
