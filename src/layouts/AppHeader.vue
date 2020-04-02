@@ -21,13 +21,17 @@
         </li>
         <template v-if="isLoggedIn">
           <li class="nav-item">
-            <a href="#" class="nav-link" @click.prevent="goToProfile">
+            <router-link
+              class="nav-link"
+              :exact-active-class="`active`"
+              :to="{
+                name: $routesNames.profileIndex,
+                params: { username: userName }
+              }"
+            >
               <img v-if="userImage" :src="userImage" class="user-pic" />
               {{ userName }}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link" @click.prevent="logout">Sign out</a>
+            </router-link>
           </li>
         </template>
       </ul>
@@ -90,15 +94,6 @@ export default class AppHeader extends Vue {
     return User.currentUser?.username || "";
   }
 
-  logout(): void {
-    User.logout();
-    this.$router.push({ name: this.$routesNames.home });
-  }
-  goToProfile(): void {
-    this.$router.push({
-      name: this.$routesNames.profileIndex,
-      params: { username: this.userName }
-    });
   get userImage(): string | null | undefined {
     return User.currentUser?.image;
   }
