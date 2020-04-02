@@ -66,6 +66,10 @@ const routes: RouteConfig[] = [
       import(
         /* webpackChunkName: "profileSettings" */ "@/views/ProfileSettings.vue"
       )
+  },
+  {
+    path: "*",
+    redirect: { name: RoutesNames.home }
   }
 ];
 
