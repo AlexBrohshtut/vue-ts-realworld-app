@@ -76,7 +76,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import CommonLoader from "@/components/CommonLoader.vue";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
-import { validateUserForm } from "@/utils/ValidationUtils";
 
 export enum AuthPageMode {
   Register = "Register",
@@ -113,18 +112,7 @@ export default class AuthPage extends Vue {
 
   async authAction(): Promise<void> {
     this.errors = [];
-    const formErrors = validateUserForm(
-      {
-        email: this.email,
-        password: this.password,
-        username: this.username
-      },
-      { shouldValidateUsername: this.isRegisterMode }
-    );
-    if (formErrors.length > 0) {
-      this.errors = formErrors;
-      return;
-    }
+
     this.isLoading = true;
     try {
       this.isRegisterMode

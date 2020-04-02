@@ -78,7 +78,6 @@ import CommonLoader from "@/components/CommonLoader.vue";
 import { ICurrentUser } from "@/store/models";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
-import { validateUserForm } from "@/utils/ValidationUtils";
 
 @Component({
   components: {
@@ -110,15 +109,7 @@ export default class ProfileSettings extends Vue {
 
   async updateSettings(): Promise<void> {
     this.errors = [];
-    const formErrors = validateUserForm({
-      email: this.email,
-      password: this.password || undefined,
-      username: this.username
-    });
-    if (formErrors.length > 0) {
-      this.errors = formErrors;
-      return;
-    }
+
     this.isLoading = true;
     try {
       await User.update({
