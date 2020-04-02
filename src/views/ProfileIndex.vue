@@ -12,7 +12,7 @@
             </p>
 
             <router-link
-              v-if="!isMyProfile"
+              v-if="isMyProfile"
               :to="{ name: $routesNames.profileSettings }"
               tag="button"
               class="btn action-btn btn-sm btn-outline-secondary"
