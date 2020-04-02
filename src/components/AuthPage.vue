@@ -16,9 +16,7 @@
             </router-link>
           </p>
 
-          <ul class="error-messages">
-            <li v-for="error in errors" :key="error">{{ error }}</li>
-          </ul>
+          <common-errors-list :errors="errors" />
 
           <form>
             <fieldset :disabled="isLoading">
@@ -73,6 +71,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
+import CommonErrorsList from "@/components/CommonErrorsList.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
@@ -84,7 +83,8 @@ export enum AuthPageMode {
 
 @Component({
   components: {
-    CommonLoader
+    CommonLoader,
+    CommonErrorsList
   }
 })
 export default class AuthPage extends Vue {

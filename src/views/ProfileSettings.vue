@@ -4,9 +4,7 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Your Settings</h1>
-          <ul class="error-messages">
-            <li v-for="error in errors" :key="error">{{ error }}</li>
-          </ul>
+          <common-errors-list :errors="errors" />
           <form>
             <fieldset :disabled="isLoading">
               <fieldset class="form-group">
@@ -74,6 +72,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 
+import CommonErrorsList from "@/components/CommonErrorsList.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
 import { ICurrentUser } from "@/store/models";
 import User from "@/store/modules/User";
@@ -81,7 +80,8 @@ import { isArrayOfStrings } from "@/utils/ArrayUtils";
 
 @Component({
   components: {
-    CommonLoader
+    CommonLoader,
+    CommonErrorsList
   }
 })
 export default class ProfileSettings extends Vue {
