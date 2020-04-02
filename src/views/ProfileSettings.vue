@@ -61,6 +61,10 @@
               </button>
             </fieldset>
           </form>
+          <hr />
+          <button class="btn btn-outline-danger" @click="logout">
+            Or click here to logout.
+          </button>
         </div>
       </div>
     </div>
@@ -97,6 +101,11 @@ export default class ProfileSettings extends Vue {
 
   get currentUser(): Partial<ICurrentUser> {
     return User.currentUser || {};
+  }
+
+  logout(): void {
+    User.logout();
+    this.$router.push({ name: this.$routesNames.home });
   }
 
   async updateSettings(): Promise<void> {
