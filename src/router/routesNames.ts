@@ -12,7 +12,6 @@ export interface IRoutesNames {
 
   profileIndex: string;
   profileSettings: string;
-  profileFavorites: string;
 }
 
 const routesNames: Readonly<IRoutesNames> = {
@@ -26,7 +25,6 @@ const routesNames: Readonly<IRoutesNames> = {
   articleView: "articleView",
 
   profileIndex: "profileIndex",
-  profileFavorites: "profileFavorites",
   profileSettings: "profileSettings"
 };
 

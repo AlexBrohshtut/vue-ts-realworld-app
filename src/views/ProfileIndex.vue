@@ -14,7 +14,6 @@
             <router-link
               v-if="isMyProfile"
               :to="{ name: $routesNames.profileSettings }"
-              tag="button"
               class="btn action-btn btn-sm btn-outline-secondary"
             >
               <i class="ion-gear-a"></i>
@@ -61,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
 import CommonFeed, { IFeedTab } from "@/components/CommonFeed.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
@@ -83,6 +82,8 @@ enum FeedType {
   Favorites = "favorites",
   My = "my"
 }
+
+Component.registerHooks(["beforeRouteEnter", "beforeRouteUpdate"]);
 
 @Component({
   components: {
@@ -137,8 +138,22 @@ export default class ProfileIndex extends Vue {
     );
   }
 
-  @Watch("$route", { immediate: true })
-  async onRouteChanged(to: Location, from: Location): Promise<void> {
+  beforeRouteEnter(to: Location, from: Location, next: Function): void {
+    next((vm: ProfileIndex) => {
+      vm.onRouteUpdate(to, from, next);
+    });
+  }
+  beforeRouteUpdate(to: Location, from: Location, next: Function): void {
+    this.onRouteUpdate(to, from, next);
+  }
+
+  async onRouteUpdate(
+    to: Location,
+    from: Location,
+    next: Function
+  ): Promise<void> {
+    next();
+
     this.isLoading = true;
     try {
       const toUserName = to?.params?.username;
@@ -154,6 +169,8 @@ export default class ProfileIndex extends Vue {
       const tabId = to?.params?.tabId;
       if (tabId && Object.values(FeedType).some(v => (v as string) === tabId)) {
         this.activeTabId = tabId as FeedType;
+      } else {
+        this.activeTabId = FeedType.My;
       }
 
       await this.fetchFeed();
