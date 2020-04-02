@@ -74,8 +74,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import CommonLoader from "@/components/CommonLoader.vue";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
-
-const MIN_USERNAME_LENGTH = 2;
+import { validateUserForm } from "@/utils/ValidationUtils";
 
 export enum AuthPageMode {
   Register = "Register",
@@ -112,7 +111,14 @@ export default class AuthPage extends Vue {
 
   async authAction(): Promise<void> {
     this.errors = [];
-    const formErrors = this.getFormErrors();
+    const formErrors = validateUserForm(
+      {
+        email: this.email,
+        password: this.password,
+        username: this.username
+      },
+      { shouldValidateUsername: this.isRegisterMode }
+    );
     if (formErrors.length > 0) {
       this.errors = formErrors;
       return;
@@ -136,28 +142,6 @@ export default class AuthPage extends Vue {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  getFormErrors(): string[] {
-    const res = [];
-
-    if (!this.email) {
-      res.push("Email is required.");
-    }
-    if (!this.password) {
-      res.push("Password is required.");
-    }
-    if (this.isRegisterMode) {
-      if (!this.username) {
-        res.push("Username is required.");
-      } else if (this.username.length < MIN_USERNAME_LENGTH) {
-        res.push(
-          `Username must be at least ${MIN_USERNAME_LENGTH} characters long`
-        );
-      }
-    }
-
-    return res;
   }
 }
 </script>
