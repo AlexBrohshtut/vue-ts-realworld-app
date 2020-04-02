@@ -7,11 +7,11 @@
           <p class="text-xs-center">
             <router-link
               v-if="isRegisterMode"
-              :to="{ name: routesNames.authLogin }"
+              :to="{ name: $routesNames.authLogin }"
             >
               Have an account?
             </router-link>
-            <router-link v-else :to="{ name: routesNames.authRegister }">
+            <router-link v-else :to="{ name: $routesNames.authRegister }">
               Need an account?
             </router-link>
           </p>
@@ -72,7 +72,6 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import CommonLoader from "@/components/CommonLoader.vue";
-import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
 
@@ -91,7 +90,6 @@ export enum AuthPageMode {
 export default class AuthPage extends Vue {
   @Prop({ required: true }) mode!: AuthPageMode;
 
-  routesNames: Readonly<IRoutesNames> = RoutesNames;
   isLoading = false;
 
   username = "";
@@ -128,7 +126,7 @@ export default class AuthPage extends Vue {
             username: this.username
           })
         : await User.login({ email: this.email, password: this.password });
-      this.$router.push({ name: RoutesNames.home });
+      this.$router.push({ name: this.$routesNames.home });
     } catch (e) {
       if (isArrayOfStrings(e)) {
         this.errors = e;

@@ -3,7 +3,7 @@
     <div class="article-meta">
       <router-link
         :to="{
-          name: routesNames.profileIndex,
+          name: $routesNames.profileIndex,
           params: { username: article.author.username }
         }"
       >
@@ -12,7 +12,7 @@
       <div class="info">
         <router-link
           :to="{
-            name: routesNames.profileIndex,
+            name: $routesNames.profileIndex,
             params: { username: article.author.username }
           }"
           class="author"
@@ -34,7 +34,7 @@
       </button>
     </div>
     <router-link
-      :to="{ name: routesNames.articleView, params: { slug: article.slug } }"
+      :to="{ name: $routesNames.articleView, params: { slug: article.slug } }"
       href=""
       class="preview-link"
     >
@@ -61,7 +61,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import { IArticle } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import DateUtils from "@/utils/DateUtils";
@@ -73,8 +72,6 @@ export default class ArticlePreview extends Vue {
   @Prop({ required: true }) readonly article!: IArticle;
 
   isLoading = false;
-
-  routesNames: Readonly<IRoutesNames> = RoutesNames;
 
   get authorImage(): string {
     return (

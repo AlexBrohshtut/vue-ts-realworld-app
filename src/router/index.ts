@@ -1,11 +1,11 @@
 import Vue from "vue";
-import VueRouter from "vue-router";
+import VueRouter, { Location, RouteConfig } from "vue-router";
 
 import RoutesNames from "./routesNames";
 
 Vue.use(VueRouter);
 
-const routes = [
+const routes: RouteConfig[] = [
   {
     path: "/",
     name: RoutesNames.home,
@@ -75,4 +75,5 @@ const router = new VueRouter({
   routes
 });
 
+export { Location, RoutesNames };
 export default router;

@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-light">
     <div class="container">
-      <router-link :to="{ name: routesNames.home }" class="navbar-brand">
+      <router-link :to="{ name: $routesNames.home }" class="navbar-brand">
         conduit
       </router-link>
       <ul class="nav navbar-nav pull-xs-right">
@@ -37,7 +37,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import RoutesNames, { IRoutesNames } from "@/router/routesNames";
 import User from "@/store/modules/User";
 
 interface IMenuItem {
@@ -49,35 +48,33 @@ interface IMenuItem {
 
 @Component
 export default class AppHeader extends Vue {
-  routesNames: Readonly<IRoutesNames> = RoutesNames;
-
   get menuItems(): IMenuItem[] {
     const menuItems = [
       {
         title: "Home",
-        routeName: RoutesNames.home,
+        routeName: this.$routesNames.home,
         isShow: true
       },
       {
         title: "New Post",
         icon: "ion-compose",
-        routeName: RoutesNames.articleCreate,
+        routeName: this.$routesNames.articleCreate,
         isShow: this.isLoggedIn
       },
       {
         title: "Settings",
-        routeName: RoutesNames.profileSettings,
+        routeName: this.$routesNames.profileSettings,
         icon: "ion-gear-a",
         isShow: this.isLoggedIn
       },
       {
         title: "Sign up",
-        routeName: RoutesNames.authRegister,
+        routeName: this.$routesNames.authRegister,
         isShow: !this.isLoggedIn
       },
       {
         title: "Sign in",
-        routeName: RoutesNames.authLogin,
+        routeName: this.$routesNames.authLogin,
         isShow: !this.isLoggedIn
       }
     ];
@@ -94,11 +91,11 @@ export default class AppHeader extends Vue {
 
   logout(): void {
     User.logout();
-    this.$router.push({ name: RoutesNames.home });
+    this.$router.push({ name: this.$routesNames.home });
   }
   goToProfile(): void {
     this.$router.push({
-      name: RoutesNames.profileIndex,
+      name: this.$routesNames.profileIndex,
       params: { username: this.userName }
     });
   }

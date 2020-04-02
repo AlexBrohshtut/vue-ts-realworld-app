@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 export interface IRoutesNames {
   home: string;
 
@@ -27,5 +29,12 @@ const routesNames: Readonly<IRoutesNames> = {
   profileFavorites: "profileFavorites",
   profileSettings: "profileSettings"
 };
+
+declare module "vue/types/vue" {
+  // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+  interface Vue {
+    $routesNames: IRoutesNames;
+  }
+}
 
 export default routesNames;
