@@ -8,7 +8,7 @@
             <li v-for="error in errors" :key="error">{{ error }}</li>
           </ul>
           <form>
-            <fieldset>
+            <fieldset :disabled="isLoading">
               <fieldset class="form-group">
                 <input
                   v-model="image"
@@ -128,6 +128,7 @@ export default class ProfileSettings extends Vue {
         image: this.image,
         username: this.username
       });
+      this.$router.push({ name: this.$routesNames.home });
     } catch (e) {
       if (isArrayOfStrings(e)) {
         this.errors = e;

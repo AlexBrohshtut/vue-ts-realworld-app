@@ -34,7 +34,7 @@ import IPagination, {
   DEFAULT_ITEMS_PER_PAGE,
   DEFAULT_START_PAGE
 } from "@/services/common/IPagination";
-import { IArticle, IArticleList } from "@/services/realWorldApi/models";
+import { IArticleList } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import User from "@/store/modules/User";
 
@@ -65,16 +65,6 @@ export default class Home extends Vue {
     return User.isLoggedIn;
   }
 
-  get articlesCache(): Record<string, IArticle> {
-    return Article.articlesCache;
-  }
-
-  get articles(): IArticle[] {
-    return this.activeFeed.articles.map(
-      article => this.articlesCache[article.slug]
-    );
-  }
-
   get tabs(): IFeedTab[] {
     const res: IFeedTab[] = [];
 
@@ -99,7 +89,7 @@ export default class Home extends Vue {
     return res;
   }
 
-  async created(): Promise<void> {
+  async mounted(): Promise<void> {
     this.activeTabId = this.isLoggedIn ? FeedType.My : FeedType.Global;
     await this.fetchFeed();
   }

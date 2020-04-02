@@ -69,11 +69,7 @@ import IPagination, {
   DEFAULT_ITEMS_PER_PAGE,
   DEFAULT_START_PAGE
 } from "@/services/common/IPagination";
-import {
-  IArticle,
-  IArticleList,
-  IProfile
-} from "@/services/realWorldApi/models";
+import { IArticleList, IProfile } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import Profile from "@/store/modules/Profile";
 import User from "@/store/modules/User";
@@ -126,16 +122,6 @@ export default class ProfileIndex extends Vue {
     return this.profile.following
       ? `Unfollow ${this.profile.username}`
       : `Follow ${this.profile.username}`;
-  }
-
-  get articlesCache(): Record<string, IArticle> {
-    return Article.articlesCache;
-  }
-
-  get articles(): IArticle[] {
-    return this.activeFeed.articles.map(
-      article => this.articlesCache[article.slug]
-    );
   }
 
   beforeRouteEnter(to: Location, from: Location, next: Function): void {

@@ -21,32 +21,34 @@
           </ul>
 
           <form>
-            <fieldset v-if="isRegisterMode" class="form-group">
-              <input
-                v-model="username"
-                class="form-control form-control-lg"
-                type="text"
-                placeholder="Your Name"
-                required="true"
-              />
-            </fieldset>
-            <fieldset class="form-group">
-              <input
-                v-model="email"
-                class="form-control form-control-lg"
-                type="text"
-                placeholder="Email"
-                required="true"
-              />
-            </fieldset>
-            <fieldset class="form-group">
-              <input
-                v-model="password"
-                class="form-control form-control-lg"
-                type="password"
-                placeholder="Password"
-                required="true"
-              />
+            <fieldset :disabled="isLoading">
+              <fieldset v-if="isRegisterMode" class="form-group">
+                <input
+                  v-model="username"
+                  class="form-control form-control-lg"
+                  type="text"
+                  placeholder="Your Name"
+                  required="true"
+                />
+              </fieldset>
+              <fieldset class="form-group">
+                <input
+                  v-model="email"
+                  class="form-control form-control-lg"
+                  type="text"
+                  placeholder="Email"
+                  required="true"
+                />
+              </fieldset>
+              <fieldset class="form-group">
+                <input
+                  v-model="password"
+                  class="form-control form-control-lg"
+                  type="password"
+                  placeholder="Password"
+                  required="true"
+                />
+              </fieldset>
             </fieldset>
             <common-loader
               v-if="isLoading"

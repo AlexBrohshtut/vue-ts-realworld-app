@@ -17,7 +17,7 @@
     <common-loader v-if="isLoading" />
 
     <article-preview
-      v-for="article in feed.articles"
+      v-for="article in articles"
       v-else
       :key="article.slug"
       :article="article"
@@ -43,7 +43,8 @@ import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import ArticlePreview from "@/components/ArticlePreview.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
 import CommonPagination from "@/components/CommonPagination.vue";
-import { IArticleList } from "@/services/realWorldApi/models";
+import { IArticle, IArticleList } from "@/services/realWorldApi/models";
+import Article from "@/store/modules/Article";
 
 export interface IFeedTab {
   id: string;
@@ -64,6 +65,14 @@ export default class CommonFeed extends Vue {
   @Prop({ required: true }) feed!: IArticleList;
   @Prop({ required: true }) itemsPerPage!: number;
   @Prop({ required: true }) currentPage!: number;
+
+  get articlesCache(): Record<string, IArticle> {
+    return Article.articlesCache;
+  }
+
+  get articles(): IArticle[] {
+    return this.feed.articles.map(article => this.articlesCache[article.slug]);
+  }
 
   @Emit("tab-changed")
   onTabChanged(tabId: string): string {
