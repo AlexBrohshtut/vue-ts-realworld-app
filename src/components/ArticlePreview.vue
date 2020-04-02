@@ -73,10 +73,8 @@ export default class ArticlePreview extends Vue {
 
   isLoading = false;
 
-  get authorImage(): string {
-    return (
-      this.article.author.image || process.env.VUE_APP_DEFAULT_AUTHOR_IMAGE
-    );
+  get authorImage(): string | null {
+    return this.article.author.image;
   }
 
   get articleDate(): string {
