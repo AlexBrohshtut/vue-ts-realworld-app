@@ -10,11 +10,24 @@
             <p>
               {{ profile.bio }}
             </p>
+
+            <router-link
+              v-if="!isMyProfile"
+              :to="{ name: $routesNames.profileSettings }"
+              tag="button"
+              class="btn action-btn btn-sm btn-outline-secondary"
+            >
+              <i class="ion-gear-a"></i>
+              Edit Profile Settings
+            </router-link>
             <button
+              v-else
               :class="[
                 'btn btn-sm action-btn',
                 profile.following ? 'btn-secondary' : 'btn-outline-secondary'
               ]"
+              :disabled="isFollowActionInProgress"
+              @click="onFollowButtonClick"
             >
               <i
                 :class="[
@@ -52,6 +65,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 
 import CommonFeed, { IFeedTab } from "@/components/CommonFeed.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
+import { Location } from "@/router";
 import IPagination, {
   DEFAULT_ITEMS_PER_PAGE,
   DEFAULT_START_PAGE
@@ -63,10 +77,11 @@ import {
 } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import Profile from "@/store/modules/Profile";
+import User from "@/store/modules/User";
 
 enum FeedType {
-  Favorited = "Favorited",
-  My = "My"
+  Favorites = "favorites",
+  My = "my"
 }
 
 @Component({
@@ -76,8 +91,9 @@ enum FeedType {
   }
 })
 export default class ProfileIndex extends Vue {
-  profile: Partial<IProfile> = {};
+  profile: IProfile = { username: "", bio: "", image: "", following: false };
   isLoading = false;
+  isFollowActionInProgress = false;
   currentPage = DEFAULT_START_PAGE;
   itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
@@ -85,16 +101,25 @@ export default class ProfileIndex extends Vue {
   activeFeed: IArticleList = { articles: [], articlesCount: 0 };
   activeTag: string | null = null;
 
-  tabs: IFeedTab[] = [
-    {
-      id: FeedType.My,
-      title: "My Articles"
-    },
-    {
-      id: FeedType.Favorited,
-      title: "Favorited Articles"
-    }
-  ];
+  get tabs(): IFeedTab[] {
+    const myTitle = this.isMyProfile
+      ? "My Articles"
+      : `${this.profile.username}'s Articles`;
+    return [
+      {
+        id: FeedType.My,
+        title: myTitle
+      },
+      {
+        id: FeedType.Favorites,
+        title: "Favorited Articles"
+      }
+    ];
+  }
+
+  get isMyProfile(): boolean {
+    return this.profile.username === User.currentUser?.username;
+  }
 
   get followButtonTitle(): string {
     return this.profile.following
@@ -112,16 +137,29 @@ export default class ProfileIndex extends Vue {
     );
   }
 
-  get currentProfileUsername(): string {
-    return this.$route.params.username;
-  }
-
-  @Watch("currentProfileUsername", { immediate: true })
-  async onCurrentProfileUsernameChanged(newValue: string): Promise<void> {
+  @Watch("$route", { immediate: true })
+  async onRouteChanged(to: Location, from: Location): Promise<void> {
     this.isLoading = true;
     try {
-      this.profile = await Profile.get(newValue);
+      const toUserName = to?.params?.username;
+      const fromUserName = from?.params?.username;
+      if (!toUserName) {
+        this.$router.push({ name: this.$routesNames.home });
+        return;
+      }
+      if (toUserName !== fromUserName) {
+        this.profile = await Profile.get(toUserName);
+      }
+
+      const tabId = to?.params?.tabId;
+      if (tabId && Object.values(FeedType).some(v => (v as string) === tabId)) {
+        this.activeTabId = tabId as FeedType;
+      }
+
       await this.fetchFeed();
+    } catch (e) {
+      //TODO: Error
+      this.$router.push({ name: this.$routesNames.home });
     } finally {
       this.isLoading = false;
     }
@@ -130,9 +168,12 @@ export default class ProfileIndex extends Vue {
   async onTabChanged(tabId: FeedType): Promise<void> {
     switch (tabId) {
       case FeedType.My:
-      case FeedType.Favorited:
+      case FeedType.Favorites:
         this.activeTabId = tabId;
         this.currentPage = DEFAULT_START_PAGE;
+        this.$router.push({
+          params: { username: this.profile.username, tabId: this.activeTabId }
+        });
         await this.fetchFeed();
         break;
 
@@ -146,6 +187,17 @@ export default class ProfileIndex extends Vue {
     await this.fetchFeed();
   }
 
+  async onFollowButtonClick(): Promise<void> {
+    this.isFollowActionInProgress = true;
+    try {
+      this.profile = this.profile.following
+        ? await Profile.unFollow(this.profile.username)
+        : await Profile.follow(this.profile.username);
+    } finally {
+      this.isFollowActionInProgress = false;
+    }
+  }
+
   async fetchFeed(): Promise<void> {
     this.isLoading = true;
     try {
@@ -155,7 +207,7 @@ export default class ProfileIndex extends Vue {
       };
 
       switch (this.activeTabId) {
-        case FeedType.Favorited:
+        case FeedType.Favorites:
           this.activeFeed = await Article.getList({
             favorited: this.profile.username,
             ...pagination

@@ -44,20 +44,10 @@ const routes: RouteConfig[] = [
       import(/* webpackChunkName: "articleView" */ "@/views/ArticleView.vue")
   },
   {
-    path: "/profile/:username",
+    path: "/@:username/:tabId?",
     name: RoutesNames.profileIndex,
     component: () =>
-      import(/* webpackChunkName: "profileIndex" */ "@/views/ProfileIndex.vue"),
-    children: [
-      {
-        path: "/favorites",
-        name: RoutesNames.profileFavorites,
-        component: () =>
-          import(
-            /* webpackChunkName: "profileFavorites" */ "@/views/ProfileFavorites.vue"
-          )
-      }
-    ]
+      import(/* webpackChunkName: "profileIndex" */ "@/views/ProfileIndex.vue")
   },
   {
     path: "/settings",
