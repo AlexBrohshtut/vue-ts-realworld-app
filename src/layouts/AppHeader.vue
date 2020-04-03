@@ -61,7 +61,7 @@ export default class AppHeader extends Vue {
         isShow: true
       },
       {
-        title: "New Post",
+        title: "New Article",
         icon: "ion-compose",
         routeName: this.$routesNames.articleCreate,
         isShow: this.isLoggedIn
