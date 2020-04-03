@@ -82,7 +82,8 @@ import { isArrayOfStrings } from "@/utils/ArrayUtils";
   }
 })
 export default class ArticleEditor extends Vue {
-  @Prop() article: IArticle | null = null;
+  @Prop() readonly article: IArticle | undefined;
+
   isLoading = false;
   title = this.article?.title || "";
   description = this.article?.description || "";
@@ -103,14 +104,18 @@ export default class ArticleEditor extends Vue {
     try {
       let article;
       if (this.article) {
-        article = await Article.update(this.article.slug, {
-          title: this.title,
-          description: this.description,
-          body: this.body,
-          tagList: this.existingTagList
-            .join(",")
-            .concat(this.tagList)
-            .split(",")
+        let newTagsList = this.existingTagList.slice();
+        if (this.tagList.length > 0) {
+          newTagsList = newTagsList.concat(this.tagList.split(","));
+        }
+        article = await Article.update({
+          slug: this.article.slug,
+          params: {
+            title: this.title,
+            description: this.description,
+            body: this.body,
+            tagList: newTagsList
+          }
         });
       } else {
         article = await Article.create({

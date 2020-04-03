@@ -98,11 +98,12 @@ class Article extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async update(
-    slug: string,
-    params: IArticleUpdateRequestParams
-  ): Promise<IArticle> {
-    const res = await ArticleUpdate(slug, params);
+  async update(data: {
+    slug: string;
+    params: IArticleUpdateRequestParams;
+  }): Promise<IArticle> {
+    console.log(data);
+    const res = await ArticleUpdate(data.slug, data.params);
     this.addArticleToCache(res);
     return res;
   }
