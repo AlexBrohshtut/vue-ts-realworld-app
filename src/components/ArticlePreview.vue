@@ -1,38 +1,13 @@
 <template>
   <div class="article-preview">
-    <div class="article-meta">
-      <router-link
-        :to="{
-          name: $routesNames.profileIndex,
-          params: { username: article.author.username }
-        }"
-      >
-        <img :src="authorImage" />
-      </router-link>
-      <div class="info">
-        <router-link
-          :to="{
-            name: $routesNames.profileIndex,
-            params: { username: article.author.username }
-          }"
-          class="author"
-        >
-          {{ article.author.username }}
-        </router-link>
-        <span class="date">{{ articleDate }}</span>
-      </div>
-      <button
-        :class="[
-          'btn btn-sm pull-xs-right',
-          article.favorited ? 'btn-primary' : 'btn-outline-primary'
-        ]"
-        :disabled="isLoading"
-        @click="toggleFavorites"
-      >
-        <i class="ion-heart"></i>
-        {{ article.favoritesCount }}
-      </button>
-    </div>
+    <article-meta :article="article">
+      <article-favorites-button
+        class="pull-xs-right"
+        :favorited="article.favorited"
+        :favorites-count="article.favoritesCount"
+        :slug="article.slug"
+      />
+    </article-meta>
     <router-link
       :to="{ name: $routesNames.articleView, params: { slug: article.slug } }"
       href=""
@@ -61,25 +36,22 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
+import ArticleFavoritesButton from "@/components/ArticleFavoritesButton.vue";
+import ArticleMeta from "@/components/ArticleMeta.vue";
 import { IArticle } from "@/services/realWorldApi/models";
-import Article from "@/store/modules/Article";
-import DateUtils from "@/utils/DateUtils";
 
 const MAX_VISIBLE_TAGS = 5;
 
-@Component
+@Component({
+  components: {
+    ArticleMeta,
+    ArticleFavoritesButton
+  }
+})
 export default class ArticlePreview extends Vue {
   @Prop({ required: true }) readonly article!: IArticle;
 
   isLoading = false;
-
-  get authorImage(): string | null {
-    return this.article.author.image;
-  }
-
-  get articleDate(): string {
-    return DateUtils.yearMonthDayWeekdayFormat(this.article.createdAt);
-  }
 
   get visibleTags(): string[] {
     return this.article.tagList.slice(0, MAX_VISIBLE_TAGS);
@@ -87,17 +59,6 @@ export default class ArticlePreview extends Vue {
 
   get nonVisibleTagsNumber(): number {
     return this.article.tagList.length - MAX_VISIBLE_TAGS;
-  }
-
-  async toggleFavorites(): Promise<void> {
-    this.isLoading = true;
-    try {
-      this.article.favorited
-        ? await Article.removeFromFavorites(this.article.slug)
-        : await Article.addToFavorites(this.article.slug);
-    } finally {
-      this.isLoading = false;
-    }
   }
 }
 </script>
