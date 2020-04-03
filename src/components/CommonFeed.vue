@@ -71,7 +71,9 @@ export default class CommonFeed extends Vue {
   }
 
   get articles(): IArticle[] {
-    return this.feed.articles.map(article => this.articlesCache[article.slug]);
+    return this.feed.articles.map(
+      article => this.articlesCache[article.slug] || article
+    );
   }
 
   @Emit("tab-changed")
