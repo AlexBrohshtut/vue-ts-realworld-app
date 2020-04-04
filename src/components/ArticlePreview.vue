@@ -1,6 +1,10 @@
 <template>
   <div class="article-preview">
-    <article-meta :article="article">
+    <article-meta
+      :author-username="author.username"
+      :created-at="article.createdAt"
+      :author-image="author.image"
+    >
       <article-favorites-button
         class="pull-xs-right"
         :favorited="article.favorited"
@@ -38,7 +42,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 import ArticleFavoritesButton from "@/components/ArticleFavoritesButton.vue";
 import ArticleMeta from "@/components/ArticleMeta.vue";
-import { IArticle } from "@/services/realWorldApi/models";
+import { IArticle, IProfile } from "@/services/realWorldApi/models";
+import Profile from "@/store/modules/Profile";
 
 const MAX_VISIBLE_TAGS = 5;
 
@@ -59,6 +64,11 @@ export default class ArticlePreview extends Vue {
 
   get nonVisibleTagsNumber(): number {
     return this.article.tagList.length - MAX_VISIBLE_TAGS;
+  }
+  get author(): IProfile {
+    return (
+      Profile.profilesCache[this.article.author.username] || this.article.author
+    );
   }
 }
 </script>
