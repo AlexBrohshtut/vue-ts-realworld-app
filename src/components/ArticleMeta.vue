@@ -3,7 +3,7 @@
     <router-link
       :to="{
         name: $routesNames.profileIndex,
-        params: { username: author.username }
+        params: { username: authorUsername }
       }"
     >
       <img :src="authorImage" />
@@ -12,11 +12,11 @@
       <router-link
         :to="{
           name: $routesNames.profileIndex,
-          params: { username: author.username }
+          params: { username: authorUsername }
         }"
         class="author"
       >
-        {{ author.username }}
+        {{ authorUsername }}
       </router-link>
       <span class="date">{{ articleDate }}</span>
     </div>
@@ -27,27 +27,15 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { IArticle, IProfile } from "@/services/realWorldApi/models";
-import Profile from "@/store/modules/Profile";
 import DateUtils from "@/utils/DateUtils";
 @Component
 export default class ArticleMeta extends Vue {
-  @Prop({ required: true }) article!: IArticle;
-
-  isLoading = false;
+  @Prop({ required: true }) createdAt!: Date;
+  @Prop() authorImage!: string;
+  @Prop({ required: true }) authorUsername!: string;
 
   get articleDate(): string {
-    return DateUtils.yearMonthDayWeekdayFormat(this.article.createdAt);
-  }
-
-  get authorImage(): string | null {
-    return this.author.image;
-  }
-
-  get author(): IProfile {
-    return (
-      Profile.profilesCache[this.article.author.username] || this.article.author
-    );
+    return DateUtils.yearMonthDayWeekdayFormat(this.createdAt);
   }
 }
 </script>

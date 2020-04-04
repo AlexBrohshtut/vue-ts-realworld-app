@@ -32,17 +32,23 @@ class Profile extends VuexModule {
 
   @Action({ rawError: true })
   async get(username: string): Promise<IProfile> {
-    return await ProfileGet(username);
+    const res = await ProfileGet(username);
+    this.addProfileToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
   async follow(username: string): Promise<IProfile> {
-    return await ProfileFollow(username);
+    const res = await ProfileFollow(username);
+    this.addProfileToCache(res);
+    return res;
   }
 
   @Action({ rawError: true })
   async unFollow(username: string): Promise<IProfile> {
-    return await ProfileUnfollow(username);
+    const res = await ProfileUnfollow(username);
+    this.addProfileToCache(res);
+    return res;
   }
 }
 

@@ -19,22 +19,11 @@
               <i class="ion-gear-a"></i>
               Edit Profile Settings
             </router-link>
-            <button
+            <profile-follow-button
               v-else
-              :class="[
-                'btn btn-sm action-btn',
-                profile.following ? 'btn-secondary' : 'btn-outline-secondary'
-              ]"
-              :disabled="isFollowActionInProgress"
-              @click="onFollowButtonClick"
-            >
-              <i
-                :class="[
-                  profile.following ? 'ion-minus-round' : 'ion-plus-round'
-                ]"
-              ></i>
-              {{ followButtonTitle }}
-            </button>
+              :username="author.username"
+              :following="author.following"
+            />
           </div>
         </div>
       </div>
@@ -64,6 +53,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import CommonFeed, { IFeedTab } from "@/components/CommonFeed.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
+import ProfileFollowButton from "@/components/ProfileFollowButton.vue";
 import { Location } from "@/router";
 import IPagination, {
   DEFAULT_ITEMS_PER_PAGE,
@@ -84,11 +74,12 @@ Component.registerHooks(["beforeRouteEnter", "beforeRouteUpdate"]);
 @Component({
   components: {
     CommonLoader,
-    CommonFeed
+    CommonFeed,
+    ProfileFollowButton
   }
 })
 export default class ProfileIndex extends Vue {
-  profile: IProfile = { username: "", bio: "", image: "", following: false };
+  _profile: IProfile = { username: "", bio: "", image: "", following: false };
   isLoading = false;
   isFollowActionInProgress = false;
   currentPage = DEFAULT_START_PAGE;
@@ -97,6 +88,10 @@ export default class ProfileIndex extends Vue {
   activeTabId: FeedType = FeedType.My;
   activeFeed: IArticleList = { articles: [], articlesCount: 0 };
   activeTag: string | null = null;
+
+  get profile(): IProfile {
+    return Profile.profilesCache[this._profile.username] || this._profile;
+  }
 
   get tabs(): IFeedTab[] {
     const myTitle = this.isMyProfile
@@ -116,12 +111,6 @@ export default class ProfileIndex extends Vue {
 
   get isMyProfile(): boolean {
     return this.profile.username === User.currentUser?.username;
-  }
-
-  get followButtonTitle(): string {
-    return this.profile.following
-      ? `Unfollow ${this.profile.username}`
-      : `Follow ${this.profile.username}`;
   }
 
   beforeRouteEnter(to: Location, from: Location, next: Function): void {
@@ -149,7 +138,7 @@ export default class ProfileIndex extends Vue {
         return;
       }
       if (toUserName !== fromUserName) {
-        this.profile = await Profile.get(toUserName);
+        this._profile = await Profile.get(toUserName);
       }
 
       const tabId = to?.params?.tabId;
@@ -188,17 +177,6 @@ export default class ProfileIndex extends Vue {
   async onPageChanged(page: number): Promise<void> {
     this.currentPage = page;
     await this.fetchFeed();
-  }
-
-  async onFollowButtonClick(): Promise<void> {
-    this.isFollowActionInProgress = true;
-    try {
-      this.profile = this.profile.following
-        ? await Profile.unFollow(this.profile.username)
-        : await Profile.follow(this.profile.username);
-    } finally {
-      this.isFollowActionInProgress = false;
-    }
   }
 
   async fetchFeed(): Promise<void> {
