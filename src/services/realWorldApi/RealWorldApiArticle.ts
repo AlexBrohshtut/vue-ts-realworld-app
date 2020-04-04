@@ -82,7 +82,7 @@ export const ArticleDeleteComment = async (
   slug: string,
   commentId: number
 ): Promise<void> => {
-  await RealWorldApiInstance.get(
+  await RealWorldApiInstance.delete(
     `${ARTICLES_PATH}/${slug}/comments/${commentId}`
   );
 };

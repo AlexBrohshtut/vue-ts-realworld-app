@@ -68,11 +68,16 @@ class Article extends VuexModule {
   }
 
   @Mutation
-  addCommentToCache(data: { slug: string; comment: IComment }): void {
-    if (!this._commentsCache[data.slug]) {
-      Vue.set(this._commentsCache, data.slug, {});
+  addCommentToCache(payload: { slug: string; comment: IComment }): void {
+    if (!this._commentsCache[payload.slug]) {
+      Vue.set(this._commentsCache, payload.slug, {});
     }
-    Vue.set(this._commentsCache, data.comment.id, data.comment);
+    Vue.set(
+      this._commentsCache[payload.slug],
+      payload.comment.id,
+      payload.comment
+    );
+    Profile.addProfileToCache(payload.comment.author);
   }
 
   @Mutation
@@ -86,8 +91,13 @@ class Article extends VuexModule {
   }
 
   @Action({ rawError: true })
-  addMultipleCommentsToCache(slug: string, comments: IComment[]): void {
-    comments.forEach(comment => this.addCommentToCache({ slug, comment }));
+  addMultipleCommentsToCache(payload: {
+    slug: string;
+    comments: IComment[];
+  }): void {
+    payload.comments.forEach(comment =>
+      this.addCommentToCache({ slug: payload.slug, comment })
+    );
   }
 
   @Action({ rawError: true })
@@ -127,11 +137,11 @@ class Article extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async update(data: {
+  async update(payload: {
     slug: string;
     params: IArticleUpdateRequestParams;
   }): Promise<IArticle> {
-    const res = await ArticleUpdate(data.slug, data.params);
+    const res = await ArticleUpdate(payload.slug, payload.params);
     this.addArticleToCache(res);
     return res;
   }
@@ -157,22 +167,25 @@ class Article extends VuexModule {
   @Action({ rawError: true })
   async fetchComments(slug: string): Promise<void> {
     const comments = await ArticleGetComments(slug);
-    this.addMultipleCommentsToCache(slug, comments);
+    this.addMultipleCommentsToCache({ slug, comments });
   }
 
   @Action({ rawError: true })
-  async addComment(data: {
+  async addComment(payload: {
     slug: string;
     params: IArticleAddCommentRequestParams;
   }): Promise<void> {
-    const comment = await ArticleAddComment(data.slug, data.params);
-    this.addCommentToCache({ slug: data.slug, comment });
+    const comment = await ArticleAddComment(payload.slug, payload.params);
+    this.addCommentToCache({ slug: payload.slug, comment });
   }
 
   @Action({ rawError: true })
-  async deleteComment(slug: string, commentId: number): Promise<void> {
-    await ArticleDeleteComment(slug, commentId);
-    this.removeCommentFromCache(slug, commentId);
+  async deleteComment(payload: {
+    slug: string;
+    commentId: number;
+  }): Promise<void> {
+    await ArticleDeleteComment(payload.slug, payload.commentId);
+    this.removeCommentFromCache(payload.slug, payload.commentId);
   }
 }
 

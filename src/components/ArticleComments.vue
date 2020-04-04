@@ -2,47 +2,12 @@
   <common-loader v-if="isLoading" />
   <div v-else>
     <comment-add :slug="slug" />
-    <div class="card">
-      <div class="card-block">
-        <p class="card-text">
-          With supporting text below as a natural lead-in to additional content.
-        </p>
-      </div>
-      <div class="card-footer">
-        <a href="" class="comment-author">
-          <img
-            src="http://i.imgur.com/Qr71crq.jpg"
-            class="comment-author-img"
-          />
-        </a>
-        &nbsp;
-        <a href="" class="comment-author">Jacob Schmidt</a>
-        <span class="date-posted">Dec 29th</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-block">
-        <p class="card-text">
-          With supporting text below as a natural lead-in to additional content.
-        </p>
-      </div>
-      <div class="card-footer">
-        <a href="" class="comment-author">
-          <img
-            src="http://i.imgur.com/Qr71crq.jpg"
-            class="comment-author-img"
-          />
-        </a>
-        &nbsp;
-        <a href="" class="comment-author">Jacob Schmidt</a>
-        <span class="date-posted">Dec 29th</span>
-        <span class="mod-options">
-          <i class="ion-edit"></i>
-          <i class="ion-trash-a"></i>
-        </span>
-      </div>
-    </div>
+    <comment-display
+      v-for="comment in comments"
+      :key="comment.id"
+      :comment="comment"
+      :slug="slug"
+    />
   </div>
 </template>
 
@@ -50,11 +15,12 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 import CommentAdd from "@/components/CommentAdd.vue";
+import CommentDisplay from "@/components/CommentDisplay.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
 import { IComment } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 
-@Component({ components: { CommonLoader, CommentAdd } })
+@Component({ components: { CommonLoader, CommentAdd, CommentDisplay } })
 export default class ArticleComments extends Vue {
   @Prop({ required: true }) slug!: string;
 
@@ -63,7 +29,7 @@ export default class ArticleComments extends Vue {
 
   get comments(): IComment[] {
     const comments: IComment[] = [];
-    this._comments.forEach(comment => {
+    this._comments?.forEach(comment => {
       if (Article.commentsCache[this.slug]?.[comment.id]) {
         comments.push(Article.commentsCache[this.slug][comment.id]);
       }
@@ -72,13 +38,13 @@ export default class ArticleComments extends Vue {
     return comments;
   }
 
-  @Watch("slug")
+  @Watch("slug", { immediate: true })
   async onSlugChange(slug: string): Promise<void> {
     this.isLoading = true;
     try {
       if (slug) {
         await Article.fetchComments(slug);
-        this._comments = Object.values(Article.commentsCache[slug]);
+        this._comments = Object.values(Article.commentsCache[slug] || []);
       }
     } finally {
       this.isLoading = false;
