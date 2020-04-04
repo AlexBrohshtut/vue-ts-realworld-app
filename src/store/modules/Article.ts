@@ -113,7 +113,7 @@ class Article extends VuexModule {
   @Action({ rawError: true })
   async delete(slug: string): Promise<IArticle> {
     const res = await ArticleDelete(slug);
-    this.removeArticleFromCache(res.slug);
+    this.removeArticleFromCache(slug);
     return res;
   }
 
