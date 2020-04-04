@@ -54,6 +54,7 @@ export default class CommentAdd extends Vue {
         slug: this.slug,
         params: { body: this.body }
       });
+      this.$emit("comment-added");
       this.body = "";
     } catch (e) {
       if (isArrayOfStrings(e)) {

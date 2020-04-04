@@ -1,12 +1,13 @@
 <template>
   <common-loader v-if="isLoading" />
   <div v-else>
-    <comment-add :slug="slug" />
+    <comment-add :slug="slug" @comment-added="refreshComments" />
     <comment-display
       v-for="comment in comments"
       :key="comment.id"
       :comment="comment"
       :slug="slug"
+      @comment-deleted="refreshComments"
     />
   </div>
 </template>
@@ -24,18 +25,18 @@ import Article from "@/store/modules/Article";
 export default class ArticleComments extends Vue {
   @Prop({ required: true }) slug!: string;
 
-  _comments: IComment[] = [];
+  comments: IComment[] = [];
   isLoading = false;
 
-  get comments(): IComment[] {
+  refreshComments(): void {
     const comments: IComment[] = [];
-    this._comments?.forEach(comment => {
+    Object.values(Article.commentsCache[this.slug] || [])?.forEach(comment => {
       if (Article.commentsCache[this.slug]?.[comment.id]) {
         comments.push(Article.commentsCache[this.slug][comment.id]);
       }
     });
     comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
-    return comments;
+    this.comments = comments;
   }
 
   @Watch("slug", { immediate: true })
@@ -44,7 +45,7 @@ export default class ArticleComments extends Vue {
     try {
       if (slug) {
         await Article.fetchComments(slug);
-        this._comments = Object.values(Article.commentsCache[slug] || []);
+        this.refreshComments();
       }
     } finally {
       this.isLoading = false;

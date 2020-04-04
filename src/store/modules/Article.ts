@@ -86,8 +86,8 @@ class Article extends VuexModule {
   }
 
   @Mutation
-  removeCommentFromCache(slug: string, id: number): void {
-    Vue.delete(this._commentsCache[slug], id);
+  removeCommentFromCache(payload: { slug: string; id: number }): void {
+    Vue.delete(this._commentsCache[payload.slug], payload.id);
   }
 
   @Action({ rawError: true })
@@ -185,7 +185,7 @@ class Article extends VuexModule {
     commentId: number;
   }): Promise<void> {
     await ArticleDeleteComment(payload.slug, payload.commentId);
-    this.removeCommentFromCache(payload.slug, payload.commentId);
+    this.removeCommentFromCache({ slug: payload.slug, id: payload.commentId });
   }
 }
 
