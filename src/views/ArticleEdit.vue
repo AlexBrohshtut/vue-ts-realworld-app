@@ -48,7 +48,8 @@ export default class ArticleEdit extends Vue {
         return;
       }
       if (toSlug !== fromSlug || !this.article) {
-        this.article = await Article.getSingle(toSlug);
+        await Article.fetchSingle(toSlug);
+        this.article = Article.articlesCache[toSlug];
       }
     } catch (e) {
       //TODO: Error

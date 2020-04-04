@@ -1,5 +1,5 @@
 <template>
-  <common-loader v-if="isLoading" />
+  <common-loader v-if="isLoading || !profile" />
   <div v-else class="profile-page">
     <div class="user-info">
       <div class="container">
@@ -90,7 +90,7 @@ export default class ProfileIndex extends Vue {
   activeTag: string | null = null;
 
   get profile(): IProfile {
-    return Profile.profilesCache[this._profile.username] || this._profile;
+    return Profile.profilesCache[this._profile?.username] || this._profile;
   }
 
   get tabs(): IFeedTab[] {
