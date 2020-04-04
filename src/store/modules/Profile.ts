@@ -1,4 +1,11 @@
-import { Action, getModule, Module, VuexModule } from "vuex-module-decorators";
+import Vue from "vue";
+import {
+  Action,
+  getModule,
+  Module,
+  Mutation,
+  VuexModule
+} from "vuex-module-decorators";
 
 import { IProfile } from "@/services/realWorldApi/models";
 import {
@@ -12,6 +19,17 @@ import modulesNames from "../modulesNames";
 
 @Module({ dynamic: true, namespaced: true, store, name: modulesNames.profile })
 class Profile extends VuexModule {
+  private _profilesCache: Record<string, IProfile> = {};
+
+  get profilesCache(): Record<string, IProfile> {
+    return this._profilesCache;
+  }
+
+  @Mutation
+  addProfileToCache(profile: IProfile): void {
+    Vue.set(this._profilesCache, profile.username, profile);
+  }
+
   @Action({ rawError: true })
   async get(username: string): Promise<IProfile> {
     return await ProfileGet(username);

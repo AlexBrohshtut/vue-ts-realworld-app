@@ -27,7 +27,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { IArticle, IAuthor } from "@/services/realWorldApi/models";
+import { IArticle, IProfile } from "@/services/realWorldApi/models";
+import Profile from "@/store/modules/Profile";
 import DateUtils from "@/utils/DateUtils";
 @Component
 export default class ArticleMeta extends Vue {
@@ -43,8 +44,10 @@ export default class ArticleMeta extends Vue {
     return this.author.image;
   }
 
-  get author(): IAuthor {
-    return this.article.author;
+  get author(): IProfile {
+    return (
+      Profile.profilesCache[this.article.author.username] || this.article.author
+    );
   }
 }
 </script>

@@ -32,6 +32,7 @@ import {
 } from "@/services/realWorldApi/RealWorldApiArticle";
 
 import store from "../index";
+import Profile from "../modules/Profile";
 import modulesNames from "../modulesNames";
 
 @Module({ dynamic: true, namespaced: true, store, name: modulesNames.article })
@@ -48,6 +49,7 @@ class Article extends VuexModule {
     if (!cachedArticle || article.updatedAt >= cachedArticle.updatedAt) {
       Vue.set(this._articlesCache, article.slug, article);
     }
+    Profile.addProfileToCache(article.author);
   }
 
   @Mutation

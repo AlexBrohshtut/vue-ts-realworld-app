@@ -1,4 +1,4 @@
-import IAuthor from "./IAuthor";
+import IProfile from "./IProfile";
 export default interface IArticle {
   slug: string;
   title: string;
@@ -9,5 +9,5 @@ export default interface IArticle {
   updatedAt: Date;
   favorited: boolean;
   favoritesCount: number;
-  author: IAuthor;
+  author: IProfile;
 }

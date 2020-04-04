@@ -4,7 +4,6 @@ import IArticleCreateRequestParams from "./IArticleCreateRequestParams";
 import IArticleGetListRequestParams from "./IArticleGetListRequestParams";
 import IArticleList from "./IArticleList";
 import IArticleUpdateRequestParams from "./IArticleUpdateRequestParams";
-import IAuthor from "./IAuthor";
 import IComment from "./IComment";
 import IProfile from "./IProfile";
 import IUser from "./IUser";
@@ -19,7 +18,6 @@ export {
   IArticleGetListRequestParams,
   IArticleList,
   IArticleUpdateRequestParams,
-  IAuthor,
   IComment,
   IProfile,
   IUser,
