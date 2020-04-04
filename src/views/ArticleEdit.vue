@@ -39,7 +39,6 @@ export default class ArticleEdit extends Vue {
     next: Function
   ): Promise<void> {
     next();
-
     this.isLoading = true;
     try {
       const toSlug = to?.params?.slug;
@@ -48,7 +47,7 @@ export default class ArticleEdit extends Vue {
         this.$router.push({ name: this.$routesNames.home });
         return;
       }
-      if (toSlug !== fromSlug) {
+      if (toSlug !== fromSlug || !this.article) {
         this.article = await Article.getSingle(toSlug);
       }
     } catch (e) {
