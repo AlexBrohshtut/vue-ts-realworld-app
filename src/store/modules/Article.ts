@@ -38,9 +38,14 @@ import modulesNames from "../modulesNames";
 @Module({ dynamic: true, namespaced: true, store, name: modulesNames.article })
 class Article extends VuexModule {
   private _articlesCache: Record<string, IArticle> = {};
+  private _commentsCache: Record<string, Record<number, IComment>> = {};
 
   get articlesCache(): Record<string, IArticle> {
     return this._articlesCache;
+  }
+
+  get commentsCache(): Record<string, Record<number, IComment>> {
+    return this._commentsCache;
   }
 
   @Mutation
@@ -62,16 +67,38 @@ class Article extends VuexModule {
     Vue.delete(this._articlesCache, slug);
   }
 
+  @Mutation
+  addCommentToCache(data: { slug: string; comment: IComment }): void {
+    if (!this._commentsCache[data.slug]) {
+      Vue.set(this._commentsCache, data.slug, {});
+    }
+    Vue.set(this._commentsCache, data.comment.id, data.comment);
+  }
+
+  @Mutation
+  clearCommentsCache(): void {
+    this._commentsCache = {};
+  }
+
+  @Mutation
+  removeCommentFromCache(slug: string, id: number): void {
+    Vue.delete(this._commentsCache[slug], id);
+  }
+
+  @Action({ rawError: true })
+  addMultipleCommentsToCache(slug: string, comments: IComment[]): void {
+    comments.forEach(comment => this.addCommentToCache({ slug, comment }));
+  }
+
   @Action({ rawError: true })
   addMultipleArticlesToCache(articles: IArticle[]): void {
     articles.forEach(article => this.addArticleToCache(article));
   }
 
   @Action({ rawError: true })
-  async getSingle(slug: string): Promise<IArticle> {
+  async fetchSingle(slug: string): Promise<void> {
     const res = await ArticleGet(slug);
     this.addArticleToCache(res);
-    return res;
   }
 
   @Action({ rawError: true })
@@ -104,49 +131,48 @@ class Article extends VuexModule {
     slug: string;
     params: IArticleUpdateRequestParams;
   }): Promise<IArticle> {
-    console.log(data);
     const res = await ArticleUpdate(data.slug, data.params);
     this.addArticleToCache(res);
     return res;
   }
 
   @Action({ rawError: true })
-  async delete(slug: string): Promise<IArticle> {
-    const res = await ArticleDelete(slug);
+  async delete(slug: string): Promise<void> {
+    await ArticleDelete(slug);
     this.removeArticleFromCache(slug);
-    return res;
   }
 
   @Action({ rawError: true })
-  async addToFavorites(slug: string): Promise<IArticle> {
+  async addToFavorites(slug: string): Promise<void> {
     const res = await ArticleAddToFavorites(slug);
     this.addArticleToCache(res);
-    return res;
   }
 
   @Action({ rawError: true })
-  async removeFromFavorites(slug: string): Promise<IArticle> {
+  async removeFromFavorites(slug: string): Promise<void> {
     const res = await ArticleRemoveFromFavorites(slug);
     this.addArticleToCache(res);
-    return res;
   }
 
   @Action({ rawError: true })
-  async getComments(slug: string): Promise<IComment[]> {
-    return await ArticleGetComments(slug);
+  async fetchComments(slug: string): Promise<void> {
+    const comments = await ArticleGetComments(slug);
+    this.addMultipleCommentsToCache(slug, comments);
   }
 
   @Action({ rawError: true })
-  async addComment(
-    slug: string,
-    params: IArticleAddCommentRequestParams
-  ): Promise<IComment> {
-    return await ArticleAddComment(slug, params);
+  async addComment(data: {
+    slug: string;
+    params: IArticleAddCommentRequestParams;
+  }): Promise<void> {
+    const comment = await ArticleAddComment(data.slug, data.params);
+    this.addCommentToCache({ slug: data.slug, comment });
   }
 
   @Action({ rawError: true })
   async deleteComment(slug: string, commentId: number): Promise<void> {
-    return await ArticleDeleteComment(slug, commentId);
+    await ArticleDeleteComment(slug, commentId);
+    this.removeCommentFromCache(slug, commentId);
   }
 }
 

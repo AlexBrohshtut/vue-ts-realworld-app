@@ -27,70 +27,7 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-md-8 offset-md-2">
-          <form class="card comment-form">
-            <div class="card-block">
-              <textarea
-                class="form-control"
-                placeholder="Write a comment..."
-                rows="3"
-              ></textarea>
-            </div>
-            <div class="card-footer">
-              <img
-                src="http://i.imgur.com/Qr71crq.jpg"
-                class="comment-author-img"
-              />
-              <button class="btn btn-sm btn-primary">
-                Post Comment
-              </button>
-            </div>
-          </form>
-
-          <div class="card">
-            <div class="card-block">
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
-            </div>
-            <div class="card-footer">
-              <a href="" class="comment-author">
-                <img
-                  src="http://i.imgur.com/Qr71crq.jpg"
-                  class="comment-author-img"
-                />
-              </a>
-              &nbsp;
-              <a href="" class="comment-author">Jacob Schmidt</a>
-              <span class="date-posted">Dec 29th</span>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-block">
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
-            </div>
-            <div class="card-footer">
-              <a href="" class="comment-author">
-                <img
-                  src="http://i.imgur.com/Qr71crq.jpg"
-                  class="comment-author-img"
-                />
-              </a>
-              &nbsp;
-              <a href="" class="comment-author">Jacob Schmidt</a>
-              <span class="date-posted">Dec 29th</span>
-              <span class="mod-options">
-                <i class="ion-edit"></i>
-                <i class="ion-trash-a"></i>
-              </span>
-            </div>
-          </div>
-        </div>
+        <article-comments class="col-xs-12 col-md-8 offset-md-2" :slug="slug" />
       </div>
     </div>
   </div>
@@ -101,6 +38,7 @@ import DOMPurify from "dompurify";
 import marked from "marked";
 import { Component, Vue } from "vue-property-decorator";
 
+import ArticleComments from "@/components/ArticleComments.vue";
 import ArticleViewActions from "@/components/ArticleViewActions.vue";
 import CommonLoader from "@/components/CommonLoader.vue";
 import { Location } from "@/router";
@@ -112,7 +50,8 @@ Component.registerHooks(["beforeRouteEnter", "beforeRouteUpdate"]);
 @Component({
   components: {
     ArticleViewActions,
-    CommonLoader
+    CommonLoader,
+    ArticleComments
   }
 })
 export default class ArticleView extends Vue {
@@ -154,8 +93,8 @@ export default class ArticleView extends Vue {
         return;
       }
       if (toSlug !== fromSlug) {
-        const article = await Article.getSingle(toSlug);
-        this.slug = article.slug;
+        await Article.fetchSingle(toSlug);
+        this.slug = toSlug;
       }
     } catch (e) {
       //TODO: Error
