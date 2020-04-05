@@ -13,7 +13,6 @@ import { Component, Vue } from "vue-property-decorator";
 
 import AppFooter from "@/layouts/AppFooter.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import User from "@/store/modules/User";
 
 @Component({
   components: {
@@ -21,11 +20,5 @@ import User from "@/store/modules/User";
     AppHeader
   }
 })
-export default class App extends Vue {
-  async created(): Promise<void> {
-    if (User.authToken) {
-      await User.fetchCurrentUser();
-    }
-  }
-}
+export default class App extends Vue {}
 </script>

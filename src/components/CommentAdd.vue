@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <div v-if="!isLoggedIn">
+    <router-link :to="{ name: $routesNames.authLogin }">Sign in</router-link>
+    or
+    <router-link :to="{ name: $routesNames.authRegister }">sign up</router-link>
+    to add comments on this article.
+  </div>
+  <div v-else>
     <common-errors-list :errors="errors" />
     <form class="card comment-form">
       <div class="card-block">
@@ -43,6 +49,10 @@ export default class CommentAdd extends Vue {
 
   get userImage(): string | null | undefined {
     return User.currentUser?.image;
+  }
+
+  get isLoggedIn(): boolean {
+    return User.isLoggedIn;
   }
 
   async addComment(): Promise<void> {

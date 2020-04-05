@@ -95,6 +95,13 @@ class User extends VuexModule implements IUserState {
     this.SET_AUTH_TOKEN(undefined);
     this.SET_CURRENT_USER(undefined);
   }
+
+  @Action({ rawError: true })
+  async completeAuth(): Promise<void> {
+    if (this.authToken && !this.isLoggedIn) {
+      await this.fetchCurrentUser();
+    }
+  }
 }
 
 export default getModule(User);
