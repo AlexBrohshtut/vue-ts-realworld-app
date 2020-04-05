@@ -43,3 +43,40 @@ Vue CLI `v.4.2.3` is used to bootstrap the application, but mostly any version w
 1. `? Where do you prefer placing config for Babel, ESLint, etc.? (Use arrow keys)` - pick `In dedicated config files` for clearer structure.
 
 ### What we have so far
+
+// TODO: Overview
+
+## Router configuration
+
+// TODO: Structure, routes names importance
+// TODO: RoutesNames in prototype
+// TODO: Module augmentation - https://vuejs.org/v2/guide/typescript.html#Augmenting-Types-for-Use-with-Plugins
+// TODO: Route watching
+// TODO: Register hooks
+// TODO: Don't forget next!!
+
+## Services configuration
+
+// TODO: Models folder, splitting to modules, intercepting and error handling
+
+## Store configuration
+
+// TODO: vuex-class vs vuex-modules-decorators what to choose? Why store is important? Writing store
+// TODO: Mention params of decorators
+// TODO: Mention that normal access to props working only in dynamic modules
+// TODO: Initial values - https://github.com/championswimmer/vuex-module-decorators/issues/193
+// TODO: Mutation in mutation
+// TODO: Why caching?
+// TODO: Payload only one parameter
+
+## Components
+
+// TODO: Tell about separation
+// TODO: Tell about vue-property-decorators
+// TODO: No watchers for you without vue-property-decorators...?
+// TODO: "strictPropertyInitialization": false, to avoid Property 'article' has no initializer and is not definitely assigned in the constructor. / ! sign
+// TODO: Watchers - immediate
+// TODO: Initialization on the beginning
+// TODO: Validation
+// TODO: Watch is not aware of types
+// TODO: Why reflect metadata?
