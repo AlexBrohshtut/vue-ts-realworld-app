@@ -75,6 +75,7 @@ import CommonErrorsList from "@/components/CommonErrorsList.vue";
 import { IArticle } from "@/services/realWorldApi/models";
 import Article from "@/store/modules/Article";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
+import { notifySuccess } from "@/utils/NotificationUtils";
 
 @Component({
   components: {
@@ -117,6 +118,7 @@ export default class ArticleEditor extends Vue {
             tagList: newTagsList
           }
         });
+        notifySuccess("Article was successfully edited, redirecting...");
       } else {
         article = await Article.create({
           title: this.title,
@@ -124,6 +126,7 @@ export default class ArticleEditor extends Vue {
           tagList: this.tagList.split(","),
           description: this.description
         });
+        notifySuccess("Article was successfully created, redirecting...");
       }
 
       this.$router.push({

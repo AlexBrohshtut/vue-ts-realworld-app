@@ -4,6 +4,7 @@ import router from "@/router";
 import routesNames from "@/router/routesNames";
 import HttpStatusCodes from "@/services/common/HttpStatusCodes";
 import User from "@/store/modules/User";
+import { notifyErrors, notifyWarn } from "@/utils/NotificationUtils";
 
 import { transformErrors } from "./Utils";
 
@@ -20,24 +21,37 @@ const OnResponseFailure = (error: any): Promise<any> => {
   const httpStatus = error?.response?.status;
 
   const errors = transformErrors(error?.response?.data?.errors);
+  const isUnknownError = errors?.[0].startsWith("Unknown");
 
   switch (httpStatus) {
     case HttpStatusCodes.UNAUTHORIZED:
-      //TODO: Logout user here
+      User.logout();
       router.push({ name: routesNames.authLogin });
-      //TODO: Notify about not logged it
+      notifyWarn("You are not logged in, please login first.");
       break;
     case HttpStatusCodes.NOT_FOUND:
-      //TODO: Notify about not found
+      notifyErrors(
+        errors?.length > 0 && !isUnknownError
+          ? errors
+          : ["Requested resource was not found."]
+      );
       break;
     case HttpStatusCodes.FORBIDDEN:
-      //TODO: Notify about forbidden
+      notifyErrors(
+        errors?.length > 0 && !isUnknownError
+          ? errors
+          : ["Access to this resource is forbidden"]
+      );
       break;
     case HttpStatusCodes.UNPROCESSABLE_ENTITY:
-      //TODO: Notify about UNPROCESSABLE_ENTITY
+      // This case should be handled at the forms
       break;
     default:
-      //TODO: Notify about unknown status code
+      notifyErrors(
+        errors?.length > 0
+          ? errors
+          : ["Unknown error occurred, please try again later."]
+      );
       break;
   }
   return Promise.reject(errors);

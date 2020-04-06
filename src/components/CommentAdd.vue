@@ -38,6 +38,7 @@ import CommonErrorsList from "@/components/CommonErrorsList.vue";
 import Article from "@/store/modules/Article";
 import User from "@/store/modules/User";
 import { isArrayOfStrings } from "@/utils/ArrayUtils";
+import { notifySuccess } from "@/utils/NotificationUtils";
 
 @Component({ components: { CommonErrorsList } })
 export default class CommentAdd extends Vue {
@@ -66,6 +67,7 @@ export default class CommentAdd extends Vue {
       });
       this.$emit("comment-added");
       this.body = "";
+      notifySuccess("Comment is added sucessfully");
     } catch (e) {
       if (isArrayOfStrings(e)) {
         this.errors = e;

@@ -150,7 +150,6 @@ export default class ProfileIndex extends Vue {
 
       await this.fetchFeed();
     } catch (e) {
-      //TODO: Error
       this.$router.push({ name: this.$routesNames.home });
     } finally {
       this.isLoading = false;

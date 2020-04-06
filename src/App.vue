@@ -5,6 +5,7 @@
       <router-view />
     </keep-alive>
     <app-footer />
+    <notifications position="bottom right" />
   </div>
 </template>
 

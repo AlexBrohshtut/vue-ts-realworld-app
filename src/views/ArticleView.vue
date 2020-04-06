@@ -97,7 +97,6 @@ export default class ArticleView extends Vue {
         this.slug = toSlug;
       }
     } catch (e) {
-      //TODO: Error
       this.$router.push({ name: this.$routesNames.home });
     } finally {
       this.isLoading = false;

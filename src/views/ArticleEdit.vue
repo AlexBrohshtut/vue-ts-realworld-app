@@ -52,7 +52,6 @@ export default class ArticleEdit extends Vue {
         this.article = Article.articlesCache[toSlug];
       }
     } catch (e) {
-      //TODO: Error
       this.$router.push({ name: this.$routesNames.home });
     } finally {
       this.isLoading = false;
