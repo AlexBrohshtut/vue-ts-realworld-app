@@ -57,7 +57,6 @@ export default class CommentDisplay extends Vue {
         slug: this.slug,
         commentId: this.comment.id
       });
-      debugger;
       this.$emit("comment-deleted");
     } finally {
       this.isLoading = false;
