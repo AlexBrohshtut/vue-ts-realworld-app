@@ -1,5 +1,6 @@
 import "./registerServiceWorker";
 
+import VueCompositionApi from "@vue/composition-api";
 import Vue from "vue";
 import Notifications from "vue-notification";
 
@@ -12,6 +13,7 @@ Vue.config.productionTip = false;
 Vue.prototype.$routesNames = RoutesNames;
 
 Vue.use(Notifications);
+Vue.use(VueCompositionApi);
 
 new Vue({
   router,
