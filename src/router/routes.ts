@@ -12,7 +12,7 @@ export const Routes: RouteConfig[] = [
     path: "/login",
     name: RoutesNames.authLogin,
     component: () =>
-      import(/* webpackChunkName: "authLogin" */ "@/views/AuthLogin.vue"),
+      import(/* webpackChunkName: "authLogin" */ "@/views/AuthLogin.tsx"),
     meta: {
       anonymousOnly: true
     }
@@ -21,7 +21,7 @@ export const Routes: RouteConfig[] = [
     path: "/register",
     name: RoutesNames.authRegister,
     component: () =>
-      import(/* webpackChunkName: "authRegister" */ "@/views/AuthRegister.vue"),
+      import(/* webpackChunkName: "authRegister" */ "@/views/AuthRegister.tsx"),
     meta: {
       anonymousOnly: true
     }
@@ -31,7 +31,7 @@ export const Routes: RouteConfig[] = [
     name: RoutesNames.articleCreate,
     component: () =>
       import(
-        /* webpackChunkName: "articleCreate" */ "@/views/ArticleCreate.vue"
+        /* webpackChunkName: "articleCreate" */ "@/views/ArticleCreate.tsx"
       ),
     meta: {
       requiresAuth: true
@@ -41,22 +41,31 @@ export const Routes: RouteConfig[] = [
     path: "/editor/:slug",
     name: RoutesNames.articleEdit,
     component: () =>
-      import(/* webpackChunkName: "articleEdit" */ "@/views/ArticleEdit.vue"),
+      import(/* webpackChunkName: "articleEdit" */ "@/views/ArticleEdit.tsx"),
     meta: {
       requiresAuth: true
+    },
+    props: route => {
+      return { slug: route.params.slug };
     }
   },
   {
     path: "/article/:slug",
     name: RoutesNames.articleView,
     component: () =>
-      import(/* webpackChunkName: "articleView" */ "@/views/ArticleView.vue")
+      import(/* webpackChunkName: "articleView" */ "@/views/ArticleView.tsx"),
+    props: route => {
+      return { slug: route.params.slug };
+    }
   },
   {
     path: "/@:username/:tabId?",
     name: RoutesNames.profileIndex,
     component: () =>
-      import(/* webpackChunkName: "profileIndex" */ "@/views/ProfileIndex.vue")
+      import(/* webpackChunkName: "profileIndex" */ "@/views/ProfileIndex.vue"),
+    props: route => {
+      return { tabId: route.params.tabId };
+    }
   },
   {
     path: "/settings",

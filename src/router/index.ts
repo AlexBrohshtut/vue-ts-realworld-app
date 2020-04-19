@@ -4,7 +4,7 @@ import VueRouter, { Location, Route } from "vue-router";
 import User from "@/store/modules/User";
 
 import { Routes } from "./routes";
-import RoutesNames from "./routesNames";
+import RoutesNames, { IRoutesNames } from "./routesNames";
 
 Vue.use(VueRouter);
 
@@ -60,5 +60,5 @@ router.beforeEach(async (to, from, next) => {
   next(); // make sure to always call next()!
 });
 
-export { Location, RoutesNames };
+export { Location, RoutesNames, IRoutesNames };
 export default router;

@@ -19,7 +19,7 @@ Vue CLI `v.4.2.3` is used to bootstrap the application, but mostly any version w
 1. Check version of Vue CLI using `vue —version` command, if it is not installed - run `yarn global add @vue/cli` to install it or `yarn global upgrade --latest @vue/cli` to update to latest version
 1. Run `vue create vue-ts-realworld-app` in console to start application creation.
 1. Pick **Manually select features**  
-   [Picking a preset](./img/setup-first-step.png)
+   ![Picking a preset](https://github.com/AlexBrohshtut/vue-ts-realworld-app/blob/master/guide/img/class-style-component.png)
 1. We need to pick here  
    **Babel** - because we want to use advanced ECMAScript features.  
    **TypeScript** - well, because we are here to use TypeScript.  
@@ -80,3 +80,24 @@ Vue CLI `v.4.2.3` is used to bootstrap the application, but mostly any version w
 // TODO: Validation
 // TODO: Watch is not aware of types
 // TODO: Why reflect metadata?
+
+## Composition API
+
+// TODO: https://github.com/luwanquan/babel-preset-vca-jsx is required, because vModel issues
+// TODO: Validator in props:
+
+```
+      validator: (value: string) => {
+        return ["text", "email", "password"].includes(value);
+      }
+```
+
+Showuld always provide property:
+
+```
+      validator: value => {
+        return ["text", "email", "password"].includes(value);
+      }
+```
+
+// TODO: value! don't forget the value

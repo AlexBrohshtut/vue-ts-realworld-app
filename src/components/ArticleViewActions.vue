@@ -64,10 +64,13 @@ export default class ArticleViewHeader extends Vue {
   }
 
   get isMyArticle(): boolean {
-    return this.article.author.username === User.currentUser?.username;
+    return (
+      this.article.author.username ===
+      (User.currentUser && User.currentUser.username)
+    );
   }
 
-  @Emit("delete-article")
+  @Emit("deleteArticle")
   deleteArticle(): void {
     return;
   }
