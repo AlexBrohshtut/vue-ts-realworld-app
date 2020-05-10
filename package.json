@@ -1,6 +1,7 @@
 {
   "name": "vue-ts-realworld-app",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
