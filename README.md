@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/AlexBrohshtut/vue-ts-realworld-app) 
+
 # vue-ts-realworld-app
 
 ![Netlify](https://img.shields.io/netlify/7c1bfa89-1389-44ed-b77d-55659ef2d317)
