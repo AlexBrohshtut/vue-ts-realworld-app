@@ -14,7 +14,7 @@
     "core-js": "^3.6.4",
     "dompurify": "^2.0.17",
     "lockr": "^0.8.5",
-    "marked": "^0.8.2",
+    "marked": "^4.0.10",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
